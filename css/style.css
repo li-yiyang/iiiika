@@ -1,11 +1,11 @@
 @font-face {
     font-family: "Splatoon2";
-    src: url("fonts/BlitzMain.otf");
+    src: url("../fonts/BlitzMain.otf");
 }
 
 @font-face {
     font-family: "DFPZongYiW7-GB";
-    src: url("fonts/DFP_GBZY7.ttf");
+    src: url("../fonts/DFP_GBZY7.ttf");
 }
 
 
