@@ -1,0 +1,289 @@
+@font-face {
+    font-family: "Splatoon2";
+    src: url("/fonts/BlitzMain.otf");
+}
+
+@font-face {
+    font-family: "DFPZongYiW7-GB";
+    src: url("/fonts/DFP_GBZY7.ttf");
+}
+
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+#container {
+    height: 100%;
+    background-color: lightgray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#banner {
+    /* size */
+    width: 700px;
+    max-width: 70vw;
+    aspect-ratio: 7/2;
+
+    /* position */
+    position: relative;
+
+    /* mask */
+    overflow: hidden;
+    border-radius: 5px;
+    background-color: gray;
+
+    /* shadow */
+    box-shadow: rgba(0, 0, 0, 0.2) 5px 5px 2.5px;
+}
+
+#banner-background {
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+#name {
+    /* position */
+    position: absolute;
+    top:  min(9.5vw, 95px);
+    left: min(35vw,  350px);
+    transform: translate(-50%, -50%);
+
+    /* fonts */
+    color: white;
+    font-family: "Splatoon2", monospace;
+    font-size: min(5.0vw, 50px);
+    text-align: center;
+
+    /* size */
+    min-width: min(20vw, 200px);
+    padding-left:  min(2.0vw, 20px);
+    padding-right: min(2.0vw, 20px);
+}
+
+#byname {
+    /* position */
+    position: absolute;
+    top:  min(3.0vw, 30px);
+    left: min(1.4vw, 14px);
+    transform: translate(0%, -50%);
+    text-align:     left;
+
+    /* fonts */
+    color: white;
+    font-size: min(3vw, 30px);
+    font-family: "Splatoon2", "DFPZongYiW7-GB", monospace;
+}
+
+#byname div {
+    margin: 0px;
+    display: inline-block;
+    padding-left:  min(0.5vw, 5px);
+    padding-right: min(0.5vw, 5px);
+}
+
+#byname div:hover {
+    margin: -2px;
+}
+
+#badge {
+    /* position */
+    position: absolute;
+    bottom: min(0.1vw, 1px);
+    right:  min(0.8vw, 8px);
+    line-height: 1.0;
+
+    /* fonts */
+    color: white;
+
+    /* layout */
+    padding: min(2vw, -20px);
+}
+
+#badge img {
+    margin: 0px;
+    display: inline-block;
+    width: min(7.5vw, 75px);
+    aspect-ratio: 1/1;
+}
+
+#badge img:hover {
+    margin: -2px;
+}
+
+#footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    background-color: white;
+    padding: 10px 0;
+    box-shadow: rgba(0, 0, 0, 0.08) 0px -1.2px 8.4px;
+    font-family: "Splatoon2", "DFPZongYiW7-GB", monospace;
+}
+
+#copyright {
+    color: gray;
+    font-size: smaller;
+    text-align: center;
+}
+
+.fade-out {
+  visibility: hidden;
+  opacity: 0%;
+  transition: visibility 0s linear 0.1s, opacity 0.1s;
+}
+
+.fade-in {
+  visibility: visible;
+  opacity: 100%;
+  transition: visibility 0s, opacity 0.2s;
+}
+
+#mask {
+    position: absolute;
+    left: 0;
+    top:  0;
+    width: 100%;
+    height: 100%;
+
+    background-image:
+        radial-gradient(
+            circle at center,
+            #666666 0.15rem,
+            transparent 0
+        ),
+        radial-gradient(
+            circle at center,
+            #666666 0.15rem,
+            transparent 0);
+    background-size: 1.2rem 1.2rem;
+    background-position: 0 0, 0.6rem 0.6rem;
+}
+
+.popup {
+    position: absolute;
+    left: 50%;
+    top:  50%;
+    transform: translate(-50%, -50%);
+
+    max-width:  90vw;
+    max-height: 60vh;
+    overflow-y: scroll;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.2) 5px 5px 2.5px;
+
+    font-family: "Splatoon2", "DFPZongYiW7-GB", monospace;
+    padding: min(5vw, 50px);
+    text-align: center;
+}
+
+.popup-title {
+    font-size: 30px;
+    color: darkgray;
+    line-height: 2.0;
+}
+
+.popup-content {
+    min-width: min(30vw, 300px);
+}
+
+ul.popup-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+ul.popup-list li:hover {
+    background-color: darkblue;
+    border-radius: 5px;
+    border: none;
+    box-shadow: rgba(0, 0, 0, 0.1) 5px 5px 2.5px;
+    transition: 0.15s;
+    color: ghostwhite;
+}
+
+ul.popup-list li:active {
+    background-color: palegoldenrod;
+    color: orange;
+    transition: 0.05s;
+    box-shadow: 0 0 10px 5px lightgoldenrodyellow;
+}
+
+#query-input {
+    width: 100%;
+    box-sizing: border-box;
+    border: 2px solid gray;
+    border-radius: 5px;
+    font-family: "Splatoon2", "DFPZongYiW7-GB", monospace;
+    font-size: 20px;
+    height: 40px;
+    color: black;
+    padding: 10px 15px;
+    caret-color: darkblue;
+    text-align: center;
+}
+
+.popup-button {
+    background-color: darkgray;
+    border-radius: 5px;
+    border: none;
+    box-shadow: 0;
+    padding-left:   min(3vw, 30px);
+    padding-right:  min(3vw, 30px);
+    padding-top:    min(1vw, 10px);
+    padding-bottom: min(1vw, 10px);
+    margin:         min(2vw, 20px);
+    font-family: "Splatoon2", "DFPZongYiW7-GB", monospace;
+    color: black;
+}
+
+.popup-button:hover {
+    background-color: darkblue;
+    color: ghostwhite;
+    transition: 0.15s;
+}
+
+.popup-button:active {
+    background-color: palegoldenrod;
+    color: orange;
+    transition: 0.05s;
+    box-shadow: 0 0 10px 5px lightgoldenrodyellow;
+}
+
+.clickable {
+    line-height: 1.1;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.clickable:hover {
+    border: 2px solid;
+    border-radius: 5px;
+}
+
+a {
+    color: inherit;
+    cursor: pointer;
+    text-decoration: none;
+    margin: 1px;
+}
+
+a:hover {
+    margin: 0px;
+    border: 1px solid;
+}
+
+a:visited {
+    text-decoration: none;
+}

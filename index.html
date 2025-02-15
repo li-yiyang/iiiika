@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon-180x180.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script type="text/javascript" charset="utf-8" src="js/jscl.js"></script>
+    <!-- <script type="text/javascript" charset="utf-8" src="js/iiiika.js"></script> -->
+    <!-- <script type="text/javascript" charset="utf-8" src="js/iiiika-base.js"></script> -->
+    <script type="text/javascript" charset="utf-8" src="js/iiiika-web.js"></script>
+    <script type="text/javascript" charset="utf-8" src="js/byname-cn-zh.js"></script>
+    <script type="text/javascript" charset="utf-8" src="js/translation-cn-zh.js"></script>
+    <title>IIIIka</title>
+  </head>
+  <body>
+    <div id="container">
+      <div id="banner">
+        <img id="banner-background" src="/img/banner/1.png">
+        <div id="name" class="clickable">CLICK ME</div>
+        <div id="byname">
+          <div id="byname-adj"  class="clickable"></div>
+          <div id="byname-noun" class="clickable"></div>
+        </div>
+        <div id="badge">
+          <img id="badge-1" class="clickable" src="/img/badge/Badge_Fest10xBattle_Join_Lv00.png">
+          <img id="badge-2" class="clickable" src="/img/badge/Badge_Fest10xBattle_Join_Lv01.png">
+          <img id="badge-3" class="clickable" src="/img/badge/Badge_Fest10xBattle_Join_Lv02.png">
+        </div>
+      </div>
+    </div>
+    <div id="footer">
+      <div id="copyright">
+        <span>
+          <a href="https://www.nintendo.com/jp/switch/av5ja/index.html">Splatoon 3</a>,
+          Copyright (c) <a href="https://www.nintendo.com">Nintendo</a>
+        </span>
+        <br>
+        <span>
+          <a id="iiiika">IIIIka</a>, Copyright (c) 2025,
+          <a href="https://github.com/li-yiyang">凉凉</a>
+        </span>
+      </div>
+    </div>
+
+    <!-- Popup UI -->
+    <div id="mask"  class="fade-out"></div>
+
+    <div id="byname-select" class="popup fade-out">
+      <div id="byname-select-title"     class="popup-title">BYNAME</div>
+      <div id="byname-select-message"   class="popup-content">CONTENT</div>
+      <ul id="byname-select-list"       class="popup-list"></ul>
+      <div>
+        <button id="byname-select-add"    class="popup-button">ADD</button>
+        <button id="byname-select-cancel" class="popup-button">CANCEL</button>
+      </div>
+    </div>
+    <div id="query" class="popup fade-out">
+      <div   id="query-title"   class="popup-title"></div>
+      <div   id="query-message" class="popup-content">Input:</div>
+      <input id="query-input"   type="text">
+      <div>
+        <button id="query-cancel"  class="popup-button">CANCEL</button>
+        <button id="query-confirm" class="popup-button">YES</button>
+      </div>
+    </div>
+    <div id="alert" class="popup fade-out">
+      <div id="alert-title" class="popup-title">ALERT</div>
+      <div id="alert-content" class="popup-content">CONTENT</div>
+      <button id="alert-button" class="popup-button">OK</button>
+    </div>
+    <script type="text/javascript" charset="utf-8" src="js/iiiika-main.js"></script>
+  </body>
+</html>

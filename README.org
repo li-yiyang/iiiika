@@ -1,0 +1,114 @@
+#+title: IIIIka
+#+author: 凉凉
+* About 关于
+IIIIka is a simple program that help with "writing"
+Chinese-like name in [[https://www.nintendo.com/jp/switch/av5ja/index.html][Splatoon]], since you cannot really
+type Chinese in the game.
+
+IIIIka 是个用于在 [[https://www.nintendo.com/jp/switch/av5ja/index.html][Splatoon]] 中辅助生成类似汉字输入的工具,
+毕竟你没法真的在游戏里面输入中文名称.
+
+*NOTE*: IIIIka is still incomplete... Current version
+is only for testing how Github Page works.
+
+*注*: IIIIka 现在的版本是不完整的...
+当前的版本只是用于测试如何使用 Github Page.
+
+* Contribute 如何参与贡献
+** Extending Rules 增加规则
+The word splitting rules and part mapping rules should
+be defined by =defword*= (or =defword=), =defpart*= (or =defpart=).
+
+拆字规则和字形映射规则由 =defword*= (或 =defword=),
+=defpart*= (或 =defpart=) 进行定义.
+
+Please refer to =lisp/base-part.lisp= and =lisp/base-word.lisp=
+for editing and extending the base rules.
+
+请修改 =lisp/base-part.lisp= 以及 =lisp/base-word.lisp=
+来修改基本的规则.
+
+** The front-end   修改前端
+Please refer to =jscl= for code.
+
+请参考 =jscl= 目录下的代码以了解如何修改前端.
+
+If you're good with CSS and HTML beautifing,
+helps are needed.
+
+假如你擅长编写漂亮的 CSS 与 HTML, 请务必帮帮我.
+
+** More Low-level  修改底层
+Please refer to [[How it works 工作原理][How it works]] for principle.
+The core logic is under two part:
+
+逻辑思路请参考 [[How it works 工作原理][工作原理]] 一节.
+核心逻辑在以下两个部分中:
+
++ =lisp/characters.lisp=
++ =lisp/core.lisp=
+
+Note: you may found some useful scripts (under =scripts=)
+while patching with IIIIka.
+
+注: 你可以在 =scripts= 下找到一些有用的工具脚本.
+
+Warning: since [[https://github.com/jscl-project/jscl][JSCL]] isn't complete Common Lisp,
+you need to be careful when patching with IIIIka
+to make it JSCL compatible.
+
+注: 因为 [[https://github.com/jscl-project/jscl][JSCL]] 并非完整的 Common Lisp,
+你可能需要使用一些特殊的操作才能使得 IIIIka
+的代码能够在 JSCL 上运行.
+
+* How it works 工作原理
+The core code is under =lisp/core.lisp=.
+
+核心代码见 =lisp/core.lisp=.
+
+The main process is splitting strings into words,
+splitting word into (horizontal) parts and mapping
+parts to terminating characters. So in general,
+there are two levels:
+
+核心逻辑是逐字匹配, 将字拆分为 (左右) 部分结构,
+并将部分映射为可输入的字符. 分为如下两个层级:
+
+1. =get-word-split=
+
+   单字拆分为 =part=
+2. =map-part=
+
+   将 =part= 映射为字符 =character=
+3. =find-character=
+
+   将字符以 unicode 的形式显示
+
+* Credits 致谢
+Note: English may not exactly translated to Chinese in this part.
+
++ *Nintendo*
+
+  Thanks for the game. And hates the net connection.
+
+  要不是这xx网络让我两局掉线一次, 我根本不会闲得来写这程序玩
++ *Leanny* ([[https://github.com/Leanny/splat3][splat3]])
+
+  lots of useful resources
+
+  大佬解包了很多的资源
++ *North-West-Wind* ([[https://github.com/North-West-Wind/splatoon3-fonts][splatoon3-fonts]])
+
+  the Splatoon 3 fonts resouces
+
+  Splatoon 3 的字体来自这位大佬的解包
++ *Inkipedia* ([[https://splatoonwiki.org/][url]])
+
+  great Splatoon Wiki
+
+  好东西
++ all the players
+
+  thank you all for your ikasu name
+
+  爆笑命名, 能忍住不笑的是人才
