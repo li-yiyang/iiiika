@@ -7,7 +7,7 @@
 ;; Copyright (c) 2025, 凉凉, all rights reserved
 ;; Created: 2025-02-12 22:46
 ;; Version: 0.0.0
-;; Last-Updated: 2025-02-12 22:46
+;; Last-Updated: 2025-02-16 11:58
 ;;           By: 凉凉
 ;; URL:
 ;; Keywords:
@@ -35,6 +35,9 @@
 (defcharacters :english
   (:lower #\a #\z)
   (:upper #\A #\Z))
+
+(defcharacters :japanese-symbol
+  "、「」")
 
 (defcharacters :hiragana
   (:a  . #\あ) (:i  . #\い) (:u  . #\う) (:e  . #\え) (:o  . #\お)

@@ -7,7 +7,7 @@
 ;; Copyright (c) 2025, 凉凉, all rights reserved
 ;; Created: 2025-02-12 18:05
 ;; Version: 0.0.0
-;; Last-Updated: 2025-02-12 18:05
+;; Last-Updated: 2025-02-16 11:58
 ;;           By: 凉凉
 ;; URL:
 ;; Keywords:
@@ -34,8 +34,8 @@
   (:use :cl)
   (:export
    #:defcharacters
-   #:defpart
-   #:defword
+   #:defrule
+   #:ikasu-char
    #:ikasu))
 
 (in-package :iiiika)

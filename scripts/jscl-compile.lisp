@@ -7,7 +7,7 @@
 ;; Copyright (c) 2025, 凉凉, all rights reserved
 ;; Created: 2025-02-14 06:42
 ;; Version: 0.0.0
-;; Last-Updated: 2025-02-14 06:42
+;; Last-Updated: 2025-02-16 11:59
 ;;           By: 凉凉
 ;; URL:
 ;; Keywords:
@@ -60,32 +60,18 @@ Note: the `srcs' should come in dependency sequence. "
     (uiop:with-current-directory ((format NIL "~A/~A/" *iiiika-web-path* src-dir))
       (jscl:compile-application srcs (format NIL "~A/js/~A" *iiiika-web-path* target)))))
 
-;; iiiika-core.js
-;; This will build the core part of iiiika.
-
-(defun compile-iiiika-core ()
-  (compile-to-js "iiiika.js" "lisp"
-                 "package.lisp"
-                 "utils.lisp"
-                 "characters.lisp"
-                 "character-sets.lisp"
-                 "core.lisp"))
-
-;; iiiika-base.js
-;; This is splited for incremental compiling.
-
-(defun compile-iiiika-base ()
-  (compile-to-js "iiiika-base.js" "lisp"
-                 "base-part.lisp"
-                 "base-word.lisp"))
-
 ;; iiiika/web
 
 (defun compile-iiiika-web ()
+  ;; This is core JSCL<->Lisp utils
   (compile-to-js "iiiika-web.js" "jscl"
                  "package.lisp"
                  "utils.lisp"
-                 "config.lisp")
+                 "config.lisp"
+                 "js-layer.lisp")
+
+  ;; This is a little wired, IIIIka depends on IIIIka/WEB,
+  ;; while iiiika-main.js depends on IIIIka....
   (compile-to-js "iiiika-main.js" "jscl"
                  "main.lisp")
 
@@ -105,5 +91,30 @@ Note: the `srcs' should come in dependency sequence. "
        (assert (uiop:file-exists-p (format NIL "~A/jscl/~A" *iiiika-web-path* file)))
        (compile-to-js (format NIL "byname-~(~A~).js" language) "jscl" file)))
    *byname*))
+
+;; iiiika-core.js
+;; This will build the core part of iiiika.
+;; IIIIka should depends on IIIIka/WEB
+
+(defun compile-iiiika-core ()
+  (compile-to-js "iiiika.js" "lisp"
+                 "package.lisp"
+                 "utils.lisp"
+                 "characters.lisp"
+                 "character-sets.lisp"
+                 "core.lisp"))
+
+;; iiiika-base.js
+;; This is splited for incremental compiling.
+
+(defun compile-iiiika-base ()
+  (compile-to-js "iiiika-base.js" "lisp"
+                 "base.lisp"))
+
+(defun compile-iiiika ()
+  "Compile all for IIIIka. "
+  (compile-iiiika-web)
+  (compile-iiiika-core)
+  (compile-iiiika-base))
 
 ;;; jscl-compile.lisp ends here
