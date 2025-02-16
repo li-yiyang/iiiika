@@ -36,6 +36,9 @@
   (:lower #\a #\z)
   (:upper #\A #\Z))
 
+(defcharacters :number
+  (:num #\1 #\9))
+
 (defcharacters :japanese-symbol
   "、「」")
 
