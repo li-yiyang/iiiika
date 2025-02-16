@@ -16,17 +16,24 @@ is only for testing how Github Page works.
 
 * Contribute 如何参与贡献
 ** Extending Rules 增加规则
-The word splitting rules and part mapping rules should
-be defined by =defword*= (or =defword=), =defpart*= (or =defpart=).
+The rules be defined by =defrule*= (or =defrule=).
 
-拆字规则和字形映射规则由 =defword*= (或 =defword=),
-=defpart*= (或 =defpart=) 进行定义.
+映射规则由 =defrule*= (或 =defrule=) 进行定义.
 
-Please refer to =lisp/base-part.lisp= and =lisp/base-word.lisp=
-for editing and extending the base rules.
+Please refer to =lisp/base.lisp= for editing
+and extending the base rules.
 
-请修改 =lisp/base-part.lisp= 以及 =lisp/base-word.lisp=
-来修改基本的规则.
+请修改 =lisp/base.lisp= 来修改基本的规则.
+
+Example:
+
+#+name: defrule-example
+#+begin_src lisp
+  (defrule*
+    ("我" "チギ")
+    ("久" "ク、")
+    ("人" "ノ、"))
+#+end_src
 
 ** The front-end   修改前端
 Please refer to =jscl= for code.
@@ -66,23 +73,38 @@ The core code is under =lisp/core.lisp=.
 
 核心代码见 =lisp/core.lisp=.
 
-The main process is splitting strings into words,
-splitting word into (horizontal) parts and mapping
-parts to terminating characters. So in general,
-there are two levels:
+The main process is like a DFA (determine finite automation),
+the characters in =iiiika::*rule-table*= is mapped to expanding
+list, whose elements are terminate characters or other characters
+in the rule table.
 
-核心逻辑是逐字匹配, 将字拆分为 (左右) 部分结构,
-并将部分映射为可输入的字符. 分为如下两个层级:
+核心的逻辑类似于 DFA (确定有限自动机, 可以参考 [[https://li-yiyang.github.io/misc/simple-regexp-for-parser/][A Simple Regexp for Parser]]),
+在 =iiiika::*rule-table*= 中, 每个字符被映射为一个展开规则列表,
+列表中的每个元素为终止字符或是指向其他的展开规则.
 
-1. =get-word-split=
+* FAQ
++ What is IIIIka?
 
-   单字拆分为 =part=
-2. =map-part=
+  为什么叫作 IIIIka?
 
-   将 =part= 映射为字符 =character=
-3. =find-character=
+  Because =ika= (イカ) in Japanese stands for the characters (inking)
+  in the game. While in the game, =ikasu= (イカス) stands for the
+  phrase "nice", "cool". So there are four (in Chinese, number 4 reads
+  like =/s/=, or ス in Japanese) =I= in =IIIIka=, standing for the =ikasu= (イカス),
+  or in Chinese version: 鱿型 (有型, nice, cool).
 
-   将字符以 unicode 的形式显示
+  游戏的角色在日语中为 =ika= (イカ, 鱿鱼). 并且在游戏中 =ikasu= (イカス,
+  鱿型) 表示有型. 所以用四个 =I= 表示 イカス, 即鱿型的意思.
++ Cannot work with my input, but return =ロ= instead.
+
+  我的输入不会被转换而是会输出 =ロ=.
+
+  Because current rules are small, mostly is from what I met in
+  the game. If you known some missing rules, please help to
+  contribute =base.lisp=.
+
+  因为当前的规则集比较有小 (主要是我在打游戏的时候遇到的).
+  假如你知道一些额外的规则, 请帮忙添加进入 =base.lisp=.
 
 * Credits 致谢
 Note: English may not exactly translated to Chinese in this part.
