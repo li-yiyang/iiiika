@@ -119,7 +119,7 @@
   ("小" "·」·")
   ("水" "フ」く")
   ("从" "人人")
-  ("北" "ヲヒ")
+  ;; ("北" "ヲヒ")
   ("对" "又寸")
 
   ;; 一些长得像的字
@@ -171,5 +171,23 @@
   ("门" "iコ")
   ("外" "タ卜")
   ("汉" "シマ"))
+
+(defrule*
+  ;; Credit:
+  ;; bilibili user: 无明常夜
+  ;; original comment is a collection screen shorts
+  ;;
+  ;; Note:
+  ;; read from image, probably not exactly like the
+  ;; original characters
+  ("月" #\Π)
+  ("湖" (:三点水 "中" "月"))
+  ("北" "オヒ")
+  (("京") ",す,")
+  ("浙" (:三点水 :提手旁 "F"))
+  ("江" (:三点水 "工"))
+  ("川" "lll")
+  ("南" "Nαη"))
+
 
 ;;; base.lisp ends here
