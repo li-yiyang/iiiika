@@ -34,7 +34,7 @@ html, body {
     position: relative;
 
     /* mask */
-    overflow: hidden;
+    /* overflow: hidden; */
     border-radius: 5px;
     background-color: gray;
 
@@ -284,15 +284,15 @@ ul.popup-list li:active {
 .tooltip .tooltiptext {
     visibility: hidden;
     font-size: initial;
-    width: 120px;
+    min-width: 120px;
     background-color: darkgray;
     color: ghostwhite;
     text-align: center;
     border-radius: 5px;
-    padding: 5px 0;
+    padding: 5px 10px;
     position: absolute;
     z-index: 999;
-    bottom: 125%;
+    bottom: 85%;
     left: 50%;
     margin-left: -60px;
     opacity: 0;

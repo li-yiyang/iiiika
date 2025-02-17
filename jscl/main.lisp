@@ -64,6 +64,21 @@
   (show-elem (get-elem-by-id "mask"))
   (show-elem (get-elem-by-id "byname-select")))
 
+(defmacro map-white-char-only-once ((char string) whitespace-do &body normal-do)
+  "Iter all `char' in `string' and only do once for whitespace. "
+  (let ((flag (gensym "WHITESPACE")))
+    `(let ((,flag NIL))
+       (map NIL (lambda (,char)
+                  (cond ((or (char= ,char #\Newline)
+                             (char= ,char #\Space))
+                         (unless ,flag
+                           (setf ,flag T)
+                           ,whitespace-do))
+                        (T
+                         (setf ,flag NIL)
+                         ,@normal-do)))
+            ,string))))
+
 (defun query-name ()
   "Like `query' but popup `query-name' widget.
 
@@ -79,34 +94,50 @@ while input, if fails, will goes like color red. "
     (setf (attr input :placeholder) (getui :name))
     (setf (text confirm) (getui :confirm))
     (setf (text cancel)  (getui :cancel))
+
+    ;; Close query-name widget
     (add-event (cancel "click")
       (hide-elem (get-elem-by-id "mask"))
       (hide-elem (get-elem-by-id "query-name")))
+
+    ;;
     (add-event (confirm "click")
-      (setf (text (get-elem-by-id "name"))
-            (iiiika:ikasu (attr input :value)))
+      (let ((name (get-elem-by-id "name")))
+        (setf (inner-html name) "")
+        (map-white-char-only-once
+            (char (attr input :value))
+            (let ((space (create-elem "span" " ")))
+              (attach-tooltip space (getui '(:normal :keyboard :space)))
+              (append-children name space))
+          (multiple-value-bind (res reason)
+              (iiiika:ikasu-char char)
+            (if reason
+                ;; push known character as `口'.
+                (let ((elem (create-elem "span" res)))
+                  (attach-tooltip elem (getui reason))
+                  (append-children name elem))
+                ;; push mapped characters to name
+                (map-white-char-only-once (char res) NIL
+                  (let ((elem (create-elem "span" (format NIL "~C" char))))
+                    (multiple-value-bind (found char-name)
+                        (iiiika::find-character char)
+                      (declare (ignore char))
+                      (attach-tooltip elem (getui (list (first char-name) :keyboard char)))
+                      (append-children name elem))))))))
       (hide-elem (get-elem-by-id  "mask"))
       (hide-elem (get-elem-by-id "query-name")))
     (add-event (input "input")
       (setf (inner-html message) "")
-      (let ((whitespace NIL))
-        (map NIL (lambda (char)
-                   (cond ((or (char= char #\Newline)
-                              (char= char #\Space))
-                          (unless whitespace
-                            (setf whitespace T)
-                            (append-children message (create-elem "span" " "))))
-                         (T
-                          (setf whitespace NIL)
-                          (multiple-value-bind (res reason)
-                              (iiiika:ikasu-char char)
-                            (let* ((char (if reason (format NIL "~C" char) res))
-                                   (elem (create-elem "span" char)))
-                              (when reason
-                                (add-css-class  elem "unknown")
-                                (attach-tooltip elem (getui reason)))
-                              (append-children message elem))))))
-             (attr input :value)))))
+      (map-white-char-only-once (char (attr input :value))
+                                (append-children message (create-elem "span" " "))
+        (multiple-value-bind (res reason)
+            (iiiika:ikasu-char char)
+          (let* ((char (if reason (format NIL "~C" char) res))
+                 (elem (create-elem "span" char)))
+            (when reason
+              (add-css-class  elem "unknown")
+              (attach-tooltip elem (getui reason)))
+            (append-children message elem))))))
   (show-elem (get-elem-by-id "mask"))
   (show-elem (get-elem-by-id "query-name")))
 

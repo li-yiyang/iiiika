@@ -174,6 +174,7 @@ l5.fvalue(internals.pv,'刂',l4.fvalue(internals.pv,l71));
 l5.fvalue(internals.pv,l72.value,l4.fvalue(internals.pv,l74));
 l5.fvalue(internals.pv,'礻',l4.fvalue(internals.pv,l74));
 l5.fvalue(internals.pv,'我',l4.fvalue(internals.pv,'チ','ギ'));
+l5.fvalue(internals.pv,'儿',l4.fvalue(internals.pv,'ノ','し'));
 l5.fvalue(internals.pv,'久',l4.fvalue(internals.pv,'ク','、'));
 l5.fvalue(internals.pv,'人',l4.fvalue(internals.pv,'ノ','、'));
 l5.fvalue(internals.pv,'么',l4.fvalue(internals.pv,'ノ','ム'));
