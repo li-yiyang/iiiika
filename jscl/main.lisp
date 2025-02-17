@@ -127,17 +127,18 @@
                          (append-children name elem)))))))))))
 
 (defun toggle-keyboard (id stat-id &optional hide)
+  (format T "(toggle-keyboard ~A ~A ~A)" id stat-id hide)
   (let ((kbd  (get-elem-by-id id))
         (stat (get-elem-by-id stat-id)))
     (cond (hide
            (setf (attr kbd :style :display) "none")
            (remove-css-class stat "button-popuped"))
-          ((string= (attr kbd :style :display) "none")
-           (setf (attr kbd :style :display) "block")
-           (add-css-class stat "button-popuped"))
-          (T
+          ((string= (attr kbd :style :display) "block")
            (setf (attr kbd :style :display) "none")
-           (remove-css-class stat "button-popuped")))))
+           (remove-css-class stat "button-popuped"))
+          (T
+           (setf (attr kbd :style :display) "block")
+           (add-css-class stat "button-popuped")))))
 
 (defun query-name-select-keyboard (id)
   "In query name, select keyboard with `id'.
@@ -174,7 +175,8 @@
                               (add-css-class button "popup-button")
                               (add-event (button "click")
                                 (setf (attr (get-elem-by-id input) :value)
-                                      (format NIL "~A~C" (attr (get-elem-by-id input) :value) char))
+                                      (format NIL "~A~C"
+                                              (attr (get-elem-by-id input) :value) char))
                                 (update-query-name-message))
                               (append-children line button)
                               (incf count)
@@ -205,27 +207,7 @@ while input, if fails, will goes like color red. "
     (setf (attr input :placeholder) (getui :name))
     (setf (text confirm) (getui :confirm))
     (setf (text keybd)   (getui :keyboard))
-    (setf (text cancel)  (getui :cancel))
-
-    ;; Toggle Keyboard
-    (add-event (keybd "click")
-      (toggle-keyboard "query-name-keyboard" "query-name-kbd"))
-
-    ;; Close query-name widget
-    (add-event (cancel "click")
-      (toggle-keyboard "query-name-keyboard" "query-name-kbd" T)
-      (hide-elem (get-elem-by-id "mask"))
-      (hide-elem (get-elem-by-id "query-name")))
-
-    ;; Click query-name confirm
-    (add-event (confirm "click")
-      (update-name)
-      (toggle-keyboard "query-name-keyboard" "query-name-kbd" T)
-      (hide-elem (get-elem-by-id  "mask"))
-      (hide-elem (get-elem-by-id "query-name")))
-
-    (add-event (input "input")
-      (update-query-name-message)))
+    (setf (text cancel)  (getui :cancel)))
   (toggle-keyboard "query-name-keyboard" "query-name-kbd" T)
   (show-elem (get-elem-by-id "mask"))
   (show-elem (get-elem-by-id "query-name")))
@@ -235,9 +217,31 @@ while input, if fails, will goes like color red. "
 (defun main ()
   "Binds all the events to front-end UI. "
 
+  ;;; Query Name
+  ;; Toggle Keyboard
+  (add-event ((get-elem-by-id "query-name-kbd") "click")
+    (toggle-keyboard "query-name-keyboard" "query-name-kbd"))
+
+  ;; Close query-name widget
+  (add-event ((get-elem-by-id "query-name-cancel") "click")
+    (toggle-keyboard "query-name-keyboard" "query-name-kbd" T)
+    (hide-elem (get-elem-by-id "mask"))
+    (hide-elem (get-elem-by-id "query-name")))
+
+  ;; Click query-name confirm
+  (add-event ((get-elem-by-id "query-name-confirm") "click")
+    (update-name)
+    (toggle-keyboard "query-name-keyboard" "query-name-kbd" T)
+    (hide-elem (get-elem-by-id  "mask"))
+    (hide-elem (get-elem-by-id "query-name")))
+
+  ;; Preview and check `query-name-message'
+  (add-event ((get-elem-by-id "query-name-input") "input")
+    (update-query-name-message))
+
   ;;; Name
-  (flet ((ask-input (event) (query-name)))
-    (add-event-listener (get-elem-by-id "name") "click" #'ask-input))
+  (add-event ((get-elem-by-id "name") "click")
+    (query-name))
 
   ;;; Byname
   (flet ((update-adj  (&optional event)
