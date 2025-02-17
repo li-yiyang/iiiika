@@ -32,16 +32,6 @@
 
 (in-package :iiiika)
 
-(defcharacters :english
-  (:lower #\a #\z)
-  (:upper #\A #\Z))
-
-(defcharacters :number
-  (:num #\1 #\9))
-
-(defcharacters :japanese-symbol
-  "、「」")
-
 (defcharacters :hiragana
   (:a  . #\あ) (:i  . #\い) (:u  . #\う) (:e  . #\え) (:o  . #\お)
   (:ka . #\か) (:ki . #\き) (:ku . #\く) (:ke . #\け) (:ko . #\こ)
@@ -74,6 +64,9 @@
   (:ra . #\ラ) (:ri . #\リ) (:ru . #\ル) (:re . #\レ) (:ro . #\ロ)
   (:wa . #\ワ) (:wo . #\ヲ) (:n  . #\ン) (:yu . #\ユ))
 
+(defcharacters :japanese-symbol
+  "、「」")
+
 (defcharacters :symbols-1
   "?!¿¡,. # &-"
   "()[];:'‘’,‛"
@@ -82,8 +75,8 @@
   "$¢€£¥  𝑓¤|^")
 
 ;; Not finished
-(defcharacters :symbols-2
-  )
+;; (defcharacters :symbols-2
+;;   )
 
 (defcharacters :symbols-3
   (:alpha   . #\α)
@@ -136,6 +129,13 @@
   (:chi     . #\Χ)
   (:psi     . #\Ψ)
   (:omega   . #\Ω))
+
+(defcharacters :english
+  (:lower #\a #\z)
+  (:upper #\A #\Z))
+
+(defcharacters :number
+  (:num #\0 #\9))
 
 ;; The `:patch' character is what you could
 ;; input in NS, but I havn't found where to

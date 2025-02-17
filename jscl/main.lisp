@@ -79,6 +79,116 @@
                          ,@normal-do)))
             ,string))))
 
+(defun update-query-name-message ()
+  "Refresh query name message. "
+  (let* ((input   (get-elem-by-id "query-name-input"))
+         (message (get-elem-by-id "query-name-message"))
+         (string  (attr input :value)))
+    (setf (inner-html message) "")
+    (if (= (length string) 0)
+        (setf (text message) "...")
+        (map-white-char-only-once (char string)
+                                  (append-children message (create-elem "span" " "))
+          (multiple-value-bind (res reason)
+              (iiiika:ikasu-char char)
+            (let* ((char (if reason (format NIL "~C" char) res))
+                   (elem (create-elem "span" char)))
+              (when reason
+                (add-css-class  elem "unknown")
+                (attach-tooltip elem (getui reason)))
+              (append-children message elem)))))))
+
+(defun update-name ()
+  (let ((name  (get-elem-by-id "name"))
+        (input (attr (get-elem-by-id "query-name-input") :value)))
+    (setf (inner-html name) "")
+    (cond ((zerop (length input))
+           (setf (inner-html name) "CLICK ME"))
+          (T
+           (map-white-char-only-once
+               (char input)
+               (let ((space (create-elem "span" " ")))
+                 (attach-tooltip space (getui '(:normal :keyboard :space)))
+                 (append-children name space))
+             (multiple-value-bind (res reason)
+                 (iiiika:ikasu-char char)
+               (if reason
+                   ;; push known character as `口'.
+                   (let ((elem (create-elem "span" res)))
+                     (attach-tooltip elem (getui reason))
+                     (append-children name elem))
+                   ;; push mapped characters to name
+                   (map-white-char-only-once (char res) NIL
+                     (let ((elem (create-elem "span" (format NIL "~C" char))))
+                       (multiple-value-bind (found char-name)
+                           (iiiika::find-character char)
+                         (declare (ignore char))
+                         (attach-tooltip elem (getui (list (first char-name) :keyboard char)))
+                         (append-children name elem)))))))))))
+
+(defun toggle-keyboard (id stat-id &optional hide)
+  (let ((kbd  (get-elem-by-id id))
+        (stat (get-elem-by-id stat-id)))
+    (cond (hide
+           (setf (attr kbd :style :display) "none")
+           (remove-css-class stat "button-popuped"))
+          ((string= (attr kbd :style :display) "none")
+           (setf (attr kbd :style :display) "block")
+           (add-css-class stat "button-popuped"))
+          (T
+           (setf (attr kbd :style :display) "none")
+           (remove-css-class stat "button-popuped")))))
+
+(defun query-name-select-keyboard (id)
+  "In query name, select keyboard with `id'.
+`id' should be the keyword in `iiiika::*character-sets*'. "
+  (map NIL (lambda (kbd)
+             (setf (attr kbd :style :display) "none"))
+       (#j:document:getElementsByClassName "popup-keyboard-content"))
+  (map NIL (lambda (kbd) (remove-css-class kbd "button-popuped"))
+       (attr (#j:document:getElementById "query-name-sets") :children))
+  (when id
+    (setf (attr (get-elem-by-id id) :style :display) "table")
+    (add-css-class (get-elem-by-id (format NIL "~A-button" id)) "button-popuped")))
+
+(defun prerender-keyboard (elem input &optional (line-break 8))
+  "pre-render keyboard on `elem'. "
+  (let ((button-line (get-elem-by-id "query-name-sets")))
+    (maphash (lambda (key char-table)
+               (let ((count  0)
+                     (choose (create-elem "button" (getui key)))
+                     (key    (format NIL "query-name-~A" (symbol-name key)))
+                     (table  (create-elem "table" ""))
+                     (line   (create-elem "tr"    "")))
+                 (add-css-class choose "popup-button")
+                 (add-css-class table  "popup-keyboard-content")
+                 (setf (attr table  :id) key)
+                 (setf (attr choose :id) (format NIL "~A-button" key))
+                 (add-event (choose "click")
+                   (query-name-select-keyboard key))
+                 (append-children button-line choose)
+                 (maphash (lambda (char name)
+                            (declare (ignore name))
+                            (let* ((char   (code-char char))
+                                   (button (create-elem "td" (format NIL "~C" char))))
+                              (add-css-class button "popup-button")
+                              (add-event (button "click")
+                                (setf (attr (get-elem-by-id input) :value)
+                                      (format NIL "~A~C" (attr (get-elem-by-id input) :value) char))
+                                (update-query-name-message))
+                              (append-children line button)
+                              (incf count)
+                              (when (= count line-break)
+                                (append-children table line)
+                                (setf line  (create-elem "tr" "")
+                                      count 0))))
+                          (getf char-table :bwd))
+                 (unless (zerop count)
+                   (append-children table line))
+                 (append-children (get-elem-by-id elem) table)))
+             iiiika::*character-sets*)
+    (query-name-select-keyboard (format NIL "query-name-~A" (symbol-name :hiragana)))))
+
 (defun query-name ()
   "Like `query' but popup `query-name' widget.
 
@@ -87,57 +197,36 @@ while input, if fails, will goes like color red. "
   (setf (text (get-elem-by-id "query-name-title")) (getui :usage))
   (let ((input   (get-elem-by-id "query-name-input"))
         (message (get-elem-by-id "query-name-message"))
+        (keybd   (get-elem-by-id "query-name-kbd"))
         (confirm (get-elem-by-id "query-name-confirm"))
         (cancel  (get-elem-by-id "query-name-cancel")))
-    (setf (inner-html message)      "")
+    (setf (inner-html message)      "↓↓↓")
     (setf (attr input :value)       "")
     (setf (attr input :placeholder) (getui :name))
     (setf (text confirm) (getui :confirm))
+    (setf (text keybd)   (getui :keyboard))
     (setf (text cancel)  (getui :cancel))
+
+    ;; Toggle Keyboard
+    (add-event (keybd "click")
+      (toggle-keyboard "query-name-keyboard" "query-name-kbd"))
 
     ;; Close query-name widget
     (add-event (cancel "click")
+      (toggle-keyboard "query-name-keyboard" "query-name-kbd" T)
       (hide-elem (get-elem-by-id "mask"))
       (hide-elem (get-elem-by-id "query-name")))
 
-    ;;
+    ;; Click query-name confirm
     (add-event (confirm "click")
-      (let ((name (get-elem-by-id "name")))
-        (setf (inner-html name) "")
-        (map-white-char-only-once
-            (char (attr input :value))
-            (let ((space (create-elem "span" " ")))
-              (attach-tooltip space (getui '(:normal :keyboard :space)))
-              (append-children name space))
-          (multiple-value-bind (res reason)
-              (iiiika:ikasu-char char)
-            (if reason
-                ;; push known character as `口'.
-                (let ((elem (create-elem "span" res)))
-                  (attach-tooltip elem (getui reason))
-                  (append-children name elem))
-                ;; push mapped characters to name
-                (map-white-char-only-once (char res) NIL
-                  (let ((elem (create-elem "span" (format NIL "~C" char))))
-                    (multiple-value-bind (found char-name)
-                        (iiiika::find-character char)
-                      (declare (ignore char))
-                      (attach-tooltip elem (getui (list (first char-name) :keyboard char)))
-                      (append-children name elem))))))))
+      (update-name)
+      (toggle-keyboard "query-name-keyboard" "query-name-kbd" T)
       (hide-elem (get-elem-by-id  "mask"))
       (hide-elem (get-elem-by-id "query-name")))
+
     (add-event (input "input")
-      (setf (inner-html message) "")
-      (map-white-char-only-once (char (attr input :value))
-                                (append-children message (create-elem "span" " "))
-        (multiple-value-bind (res reason)
-            (iiiika:ikasu-char char)
-          (let* ((char (if reason (format NIL "~C" char) res))
-                 (elem (create-elem "span" char)))
-            (when reason
-              (add-css-class  elem "unknown")
-              (attach-tooltip elem (getui reason)))
-            (append-children message elem))))))
+      (update-query-name-message)))
+  (toggle-keyboard "query-name-keyboard" "query-name-kbd" T)
   (show-elem (get-elem-by-id "mask"))
   (show-elem (get-elem-by-id "query-name")))
 
@@ -184,6 +273,9 @@ while input, if fails, will goes like color red. "
   ;;; IIIIka (now only for dbg new feature usage)
   (add-event ((get-elem-by-id "iiiika") "click")
     )
+
+  ;;; Query name keyboard
+  (prerender-keyboard "query-name-keyboard" "query-name-input")
   )
 
 (main)

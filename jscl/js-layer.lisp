@@ -62,7 +62,7 @@ Example
              (attr (if (keywordp attr)
                        (js-like-case (symbol-name attr))
                        attr)))
-        `(attr (jscl::oget ,elem ,attr ,@(rest attr-chain))))))
+        `(attr (jscl::oget ,elem ,attr) ,@(rest attr-chain)))))
 
 (defmacro call (elem &body fn-params)
   "Make JS chain calling lispy.

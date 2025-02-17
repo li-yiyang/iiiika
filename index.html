@@ -56,19 +56,23 @@
       <div id="byname-select-title"     class="popup-title">BYNAME</div>
       <div id="byname-select-message"   class="popup-content">CONTENT</div>
       <ul  id="byname-select-list"      class="popup-list"></ul>
-      <div>
+      <div class="nowrap">
         <button id="byname-select-add"    class="popup-button">ADD</button>
         <button id="byname-select-cancel" class="popup-button">CANCEL</button>
       </div>
     </div>
 
     <div id="query-name" class="popup fade-out">
-      <div   id="query-name-title"   class="popup-content"></div>
-      <div   id="query-name-message" class="popup-title">Input:</div>
-      <input id="query-name-input"   class="popup-input" type="text">
-      <div>
+      <div   id="query-name-title"    class="popup-content"></div>
+      <div   id="query-name-message"  class="popup-title">Input:</div>
+      <input id="query-name-input"    class="popup-input" type="text">
+      <div class="nowrap">
         <button id="query-name-cancel"  class="popup-button">CANCEL</button>
+        <button id="query-name-kbd"     class="popup-button">KEYBOARD</button>
         <button id="query-name-confirm" class="popup-button">YES</button>
+      </div>
+      <div id="query-name-keyboard" class="popup-keyboard">
+        <div id="query-name-sets" class="popup-buttons"></div>
       </div>
     </div>
 
@@ -76,7 +80,7 @@
       <div   id="query-title"   class="popup-title"></div>
       <div   id="query-message" class="popup-content">Input:</div>
       <input id="query-input"   class="popup-input" type="text">
-      <div>
+      <div class="nowrap">
         <button id="query-cancel"  class="popup-button">CANCEL</button>
         <button id="query-confirm" class="popup-button">YES</button>
       </div>
@@ -85,7 +89,9 @@
     <div id="alert" class="popup fade-out">
       <div id="alert-title" class="popup-title">ALERT</div>
       <div id="alert-content" class="popup-content">CONTENT</div>
-      <button id="alert-button" class="popup-button">OK</button>
+      <div class="nowrap">
+        <button id="alert-button" class="popup-button">OK</button>
+      </div>
     </div>
 
     <script type="text/javascript" charset="utf-8" src="js/iiiika-main.js"></script>

@@ -53,6 +53,8 @@
   (:alert-title  "消息")
   (:about        "关于")
   (:unknown-rule "未知规则")
+  (:normal       "普通")
+  (:space        "空格")
   (:english      "英文")
   (:number       "数字")
   (:japanese-symbol "日语符号")

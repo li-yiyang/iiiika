@@ -175,8 +175,8 @@ html, body {
     top:  50%;
     transform: translate(-50%, -50%);
 
-    max-width:  90vw;
-    max-height: 60vh;
+    max-width:  min(80vw, 800px);
+    max-height: 80vh;
     overflow-y: scroll;
     background-color: white;
     border-radius: 5px;
@@ -237,6 +237,10 @@ ul.popup-list li:active {
     text-align: center;
 }
 
+.nowrap {
+    text-wrap: nowrap;
+}
+
 .popup-button {
     background-color: darkgray;
     border-radius: 5px;
@@ -262,6 +266,50 @@ ul.popup-list li:active {
     color: orange;
     transition: 0.05s;
     box-shadow: 0 0 10px 5px lightgoldenrodyellow;
+}
+
+.button-popuped {
+    background-color: darkblue;
+    color: ghostwhite;
+}
+
+.popup-buttons {
+    text-wrap: nowrap;
+    overflow-x: scroll;
+    width: 100%;
+    background-color: ghostwhite;
+    border-radius: 5px;
+}
+
+.popup-buttons .popup-button {
+    margin: min(0.5vw, 5px);
+}
+
+::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 10px;
+  height: 10px;
+  margin: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: rgba(0,0,0,.5);
+  -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+}
+
+.popup-keyboard {
+    width: 100%;
+}
+
+.popup-keyboard-content {
+    width: 100%;
+    transition: 0.2s;
+}
+
+.popup-keyboard tr {
+    line-height: 1.1;
+    font-size: 24px;
 }
 
 .clickable {
