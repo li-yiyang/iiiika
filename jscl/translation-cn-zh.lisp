@@ -52,6 +52,7 @@
   (:choose       "选择")
   (:alert-title  "消息")
   (:about        "关于")
+  (:unknown-rule "未知规则")
   (:usage        "输入中文, 生成伪中文 (不在规则中的将会映射为 `口')")
   (:about-msg    "IIIIka 是一个用来在 Splatoon 游戏中辅助生成类似汉字输入的小工具. ")
   (:how-it-works "IIIIka 的核心逻辑是逐字匹配, 将汉字拆分成类似左右结构, 并对不同的结构进行规则映射. ")

@@ -116,10 +116,12 @@ it will render white square `□'. So in chinese,
 we are calling it `口' (kǒu, mouse, 嘴). To render it
 using Splatoon fonts, using Katakana RO character. "
   (flet ((single (ui)
-           (if (stringp ui) ui
-               (or (gethash* *common-message* language           ui)
-                   (gethash* *common-message* *default-language* ui)
-                   "ロロロ"))))
+           (cond ((stringp    ui) ui)
+                 ((characterp ui) (format NIL "~C" ui))
+                 (T
+                  (or (gethash* *common-message* language           ui)
+                      (gethash* *common-message* *default-language* ui)
+                      "ロロロ")))))
     (if (listp ui)
         (with-output-to-string (stream)
           (loop for single-ui in ui

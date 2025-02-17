@@ -197,6 +197,10 @@ html, body {
     min-width: min(30vw, 300px);
 }
 
+.unknown {
+    color: orangered;
+}
+
 ul.popup-list {
     list-style-type: none;
     margin: 0;
@@ -219,7 +223,7 @@ ul.popup-list li:active {
     box-shadow: 0 0 10px 5px lightgoldenrodyellow;
 }
 
-#query-input {
+.popup-input {
     width: 100%;
     box-sizing: border-box;
     border: 2px solid gray;
@@ -271,6 +275,47 @@ ul.popup-list li:active {
 .clickable:hover {
     border: 2px solid;
     border-radius: 5px;
+}
+
+.tooltip {
+    position: relative;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    font-size: initial;
+    width: 120px;
+    background-color: darkgray;
+    color: ghostwhite;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 999;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: darkgray transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+.tooltiptext {
+    pointer-events: none;
 }
 
 a {

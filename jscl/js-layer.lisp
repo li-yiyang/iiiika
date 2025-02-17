@@ -164,6 +164,12 @@ Syntax:
 (defun append-children (parent children)
   (call parent (:append-child children)))
 
+(defun add-css-class (elem class)
+  (call elem :class-list (:add class)))
+
+(defun remove-css-class (elem class)
+  (call elem :class-list (:remove class)))
+
 (defun attach-tooltip (elem tooltip)
   (let ((tooltip (create-elem "span" tooltip)))
     (call tooltip :class-list (:add "tooltiptext"))

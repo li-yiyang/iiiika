@@ -95,13 +95,21 @@ Return an ikasu string. "
 
 (defun ikasu (input)
   "Make `input' ikasu.
-Return an ikasu output string. "
-  (with-output-to-string (output)
-    (map NIL (lambda (char)
-               (unless (or (char= char #\Newline)
-                           (char= char #\Space))
-                 (write-string (ikasu-char char) output)))
-         input)))
+Return an ikasu output string.
+The input white spaces will be ignored
+and turned into single white space. "
+  (let ((whitespace NIL))
+    (with-output-to-string (output)
+      (map NIL (lambda (char)
+                 (cond ((or (char= char #\Newline)
+                            (char= char #\Space))
+                        (unless whitespace
+                          (setf whitespace T)
+                          (write-char #\Space output)))
+                       (T
+                        (setf whitespace NIL)
+                        (write-string (ikasu-char char) output))))
+           input))))
 
 (defun define-rule (from to &optional (strict *strictp*))
   "Define rule for the `from' to `to'.

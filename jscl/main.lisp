@@ -64,20 +64,59 @@
   (show-elem (get-elem-by-id "mask"))
   (show-elem (get-elem-by-id "byname-select")))
 
+(defun query-name ()
+  "Like `query' but popup `query-name' widget.
+
+The input name will be checked and goes to `query-name-message'
+while input, if fails, will goes like color red. "
+  (setf (text (get-elem-by-id "query-name-title")) (getui :usage))
+  (let ((input   (get-elem-by-id "query-name-input"))
+        (message (get-elem-by-id "query-name-message"))
+        (confirm (get-elem-by-id "query-name-confirm"))
+        (cancel  (get-elem-by-id "query-name-cancel")))
+    (setf (inner-html message)      "")
+    (setf (attr input :value)       "")
+    (setf (attr input :placeholder) (getui :name))
+    (setf (text confirm) (getui :confirm))
+    (setf (text cancel)  (getui :cancel))
+    (add-event (cancel "click")
+      (hide-elem (get-elem-by-id "mask"))
+      (hide-elem (get-elem-by-id "query-name")))
+    (add-event (confirm "click")
+      (setf (text (get-elem-by-id "name"))
+            (iiiika:ikasu (attr input :value)))
+      (hide-elem (get-elem-by-id  "mask"))
+      (hide-elem (get-elem-by-id "query-name")))
+    (add-event (input "input")
+      (setf (inner-html message) "")
+      (let ((whitespace NIL))
+        (map NIL (lambda (char)
+                   (cond ((or (char= char #\Newline)
+                              (char= char #\Space))
+                          (unless whitespace
+                            (setf whitespace T)
+                            (append-children message (create-elem "span" " "))))
+                         (T
+                          (setf whitespace NIL)
+                          (multiple-value-bind (res reason)
+                              (iiiika:ikasu-char char)
+                            (let* ((char (if reason (format NIL "~C" char) res))
+                                   (elem (create-elem "span" char)))
+                              (when reason
+                                (add-css-class  elem "unknown")
+                                (attach-tooltip elem (getui reason)))
+                              (append-children message elem))))))
+             (attr input :value)))))
+  (show-elem (get-elem-by-id "mask"))
+  (show-elem (get-elem-by-id "query-name")))
+
 ;; Main
 
 (defun main ()
   "Binds all the events to front-end UI. "
 
   ;;; Name
-  (flet ((ask-input (event)
-           (query (getui :usage)
-                  :title    (getui :name)
-                  :hint     (getui :name)
-                  :callback (lambda (name)
-                              ;; TODO: iiiika:ikasu
-                              (setf (text (get-elem-by-id "name"))
-                                    (iiiika:ikasu name))))))
+  (flet ((ask-input (event) (query-name)))
     (add-event-listener (get-elem-by-id "name") "click" #'ask-input))
 
   ;;; Byname
