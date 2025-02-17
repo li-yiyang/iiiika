@@ -65,18 +65,64 @@
   (:wa . #\ワ) (:wo . #\ヲ) (:n  . #\ン) (:yu . #\ユ))
 
 (defcharacters :japanese-symbol
-  "、「」")
+  "、。？！〜ー「」")
+
+(defcharacters :russian
+  "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
+  "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ")
+
+(defcharacters :english-lower-aaa
+  "àáâãåæāăąç"
+  "ćċčðďǆǳèéêë"
+  "ēęěğġħìíîï"
+  ;; Note: missing ḽ like character,
+  ;; but should have accent above...
+  "īįiĳķĺļ ł")
+
+(defcharacters :english-upper-aaa
+  "ÀÁÂÃÅÆĀĂĄÇ"
+  ;; Note: missing Ǆ and Ǳ.
+  ;; not knowing which character to input...
+  "ĆĊČÐĎ  ÈÉÊË"
+  "ĒĘĚĞĠĦÌÍÎÏ"
+  ;; Note: missing Ḽ like character,
+  ;; but should have accent above...
+  "ĪĮIĲĶĹĻ Ł")
+
+(defcharacters :english-lower-nnn
+  "ñńņňòóôõöøœ"
+  ;; Note:
+  ;; + missing ṱ like character,
+  ;;   but should have accent above...
+  ;; + missing ꞵ like character
+  "ő ŕřš śşþ ț"
+  "ùúûüūůűųýÿź"
+  "żž")
+
+(defcharacters :english-upper-nnn
+  "ÑŃŅŇÒÓÔÕÖØŒ"
+  ;; Note:
+  ;; + missing Ṱ like character,
+  ;;   but should have accent above...
+  ;; + missing upper ꞵ like character
+  "Ő ŔŘŠ ŚŞÞ Ț"
+  "ÙÚÛÜŪŮŰŲÝŸŹ"
+  "ŻŽ")
 
 (defcharacters :symbols-1
   "?!¿¡,. # &-"
   "()[];:'‘’,‛"
   " /{}·…\"“”„_"
   "<>《》«»←→↑↓⇒⇔~"
-  "$¢€£¥  𝑓¤|^")
+  "$¢€£¥  ƒ¤|^")
 
 ;; Not finished
-;; (defcharacters :symbols-2
-;;   )
+(defcharacters :symbols-2
+  "´`+-×÷=±∞√¬"
+  "∀⊂⊃∴∵⌒μ№°′∂"
+  "¹²³¼½¾*♪♭♀♂"
+  "○●◎□■△▲▽▼"
+  "☆★  ©®™§¶✝〒")
 
 (defcharacters :symbols-3
   (:alpha   . #\α)
@@ -145,9 +191,11 @@
 
 ;; TODO:
 ;; + `Я': see `lisp/base.lisp' (credit: bilibili user: 今天潜行用箱子了吗)
+;;      -> `:ruassian'
 ;; + `+': see `lisp/base.lisp' (credit: bilibili user: 今天潜行用箱子了吗)
+;;      -> `:symbol-2'
 
-(defcharacters :patch
-  "Я+")
+;; (defcharacters :patch
+;;   "Я+")
 
 ;;; character-sets.lisp ends here
