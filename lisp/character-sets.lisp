@@ -56,7 +56,7 @@
   (:pa . #\ぱ) (:pi . #\ぴ) (:pu . #\ぷ) (:pe . #\ぺ) (:po . #\ぽ)
   (:ma . #\ま) (:mi . #\み) (:mu . #\む) (:me . #\め) (:mo . #\も)
   (:ra . #\ら) (:ri . #\り) (:ru . #\る) (:re . #\れ) (:ro . #\ろ)
-  (:wa . #\わ) (:wo . #\を) (:n  . #\ん) (:yu . #\ゆ))
+  (:wa . #\わ) (:wi . #\ゐ) (:wo . #\を) (:n  . #\ん) (:yu . #\ゆ))
 
 (defcharacters :katakana
   (:a  . #\ア) (:i  . #\イ) (:u  . #\ウ) (:e  . #\エ) (:o  . #\オ)
@@ -136,5 +136,18 @@
   (:chi     . #\Χ)
   (:psi     . #\Ψ)
   (:omega   . #\Ω))
+
+;; The `:patch' character is what you could
+;; input in NS, but I havn't found where to
+;; input the character... I will remove them
+;; and place them to correct place after I
+;; found their keyboard place.
+
+;; TODO:
+;; + `Я': see `lisp/base.lisp' (credit: bilibili user: 今天潜行用箱子了吗)
+;; + `+': see `lisp/base.lisp' (credit: bilibili user: 今天潜行用箱子了吗)
+
+(defcharacters :patch
+  "Я+")
 
 ;;; character-sets.lisp ends here

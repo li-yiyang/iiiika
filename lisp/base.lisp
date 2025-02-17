@@ -69,7 +69,7 @@
   ("才" (:katakana :o))  ;; オ
   (("力" "刀") (:katakana :ka)) ;; カ
   ("千" (:katakana :ti)) ;; チ
-  ("不" (:katakana :to)) ;; ト
+  (("卜" "不") (:katakana :to)) ;; ト
   ("夕" (:katakana :ta)) ;; タ
   ("八" (:katakana :ha)) ;; ハ
   (("也" "巴") (:katakana :se)) ;; セ
@@ -129,5 +129,27 @@
   ("加" ("力" :口字旁))
   ("班" (:王字旁 :立刀旁 :王字旁))
   )
+
+;; Rules from Bilibili
+;; link: https://www.bilibili.com/video/BV1VSAVeZE4m/
+
+(defrule*
+  ;; Credit:
+  ;; bilibili user: 今天潜行用箱子了吗
+  ;; original comment:
+  ;; ゐ イ+ ノム キT チξ
+  ;; Яll キT チギ
+  ;; iコ タ卜 シマ
+  ("为" "ゐ")
+  ("什" "イ+")
+
+  ;; Note: currently character-table is not complete
+  ;; see `lisp/character-sets.lisp' `:patch' for the
+  ;; character patches.
+  ("别" "Яll")
+
+  ("门" "iコ")
+  ("外" "タ卜")
+  ("汉" "シマ"))
 
 ;;; base.lisp ends here
