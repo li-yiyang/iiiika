@@ -127,7 +127,6 @@
                          (append-children name elem)))))))))))
 
 (defun toggle-keyboard (id stat-id &optional hide)
-  (format T "(toggle-keyboard ~A ~A ~A)" id stat-id hide)
   (let ((kbd  (get-elem-by-id id))
         (stat (get-elem-by-id stat-id)))
     (cond (hide
