@@ -189,5 +189,11 @@
   ("川" "lll")
   ("南" "Nαη"))
 
+(defrule*
+  ;; Credit:
+  ;; bilibili user: 哪来的完蛋玩意儿
+  ;; original comment is a collection screen shorts
+  ("几" (:hiragana :n))  ;; ん
+  ("机" (:木字旁 "几")))
 
 ;;; base.lisp ends here

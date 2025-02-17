@@ -244,5 +244,10 @@ l5.fvalue(internals.pv,'浙',l4.fvalue(internals.pv,l59.value,l65.value,'F'));
 l5.fvalue(internals.pv,'江',l4.fvalue(internals.pv,l59.value,'工'));
 l5.fvalue(internals.pv,'川',l4.fvalue(internals.pv,'l','l','l'));
 l5.fvalue(internals.pv,'南',l4.fvalue(internals.pv,'N','α','η'));
+var l80=internals.intern('N','KEYWORD');
+l80.value=l80;
+var l81=internals.QIList(l12,l80,l8);
+l5.fvalue(internals.pv,'几',l4.fvalue(internals.pv,l81));
+l5.fvalue(internals.pv,'机',l4.fvalue(internals.pv,l77.value,'几'));
 })(jscl.internals.pv, jscl.internals);
 })( typeof require !== 'undefined'? require('./jscl'): window.jscl )
