@@ -86,7 +86,7 @@
   ;; original comment:
   ;; “打”字可以换成“キT”更像哦
   ("丁" "T")
-  
+
   ("工" (:katakana :e))  ;; エ
   ("才" (:katakana :o))  ;; オ
   (("力" "刀") (:katakana :ka)) ;; カ
@@ -257,6 +257,19 @@
   ("边" "でカ")
   ((:禾字旁 "禾") "ポ")
   ("种" (:禾字旁 "中")))
+
+(defrule*
+  ;; Credits:
+  ;; bilibili user: 硫离子还是琉璃子
+  ;; original comment is screen shorts
+  ;; oΠβoモ (Bミ
+  ("月" "Л")
+  ("哪" (:口字旁 "月" :双耳旁))
+  ("吒" (:口字旁 "モ"))
+
+  ;; inspired from "吒":
+  ("托" (:提手旁 "モ"))
+  ("毛" "モ"))
 
 ;;;; Missing Request
 
