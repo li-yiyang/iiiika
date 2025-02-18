@@ -46,7 +46,8 @@
   (:pa . #\ぱ) (:pi . #\ぴ) (:pu . #\ぷ) (:pe . #\ぺ) (:po . #\ぽ)
   (:ma . #\ま) (:mi . #\み) (:mu . #\む) (:me . #\め) (:mo . #\も)
   (:ra . #\ら) (:ri . #\り) (:ru . #\る) (:re . #\れ) (:ro . #\ろ)
-  (:wa . #\わ) (:wi . #\ゐ) (:wo . #\を) (:n  . #\ん) (:yu . #\ゆ))
+  (:wa . #\わ) (:wi . #\ゐ) (:wo . #\を) (:n  . #\ん)
+  (:yu . #\ゆ) (:ya . #\や))
 
 (defcharacters :katakana
   (:a  . #\ア) (:i  . #\イ) (:u  . #\ウ) (:e  . #\エ) (:o  . #\オ)
@@ -62,7 +63,8 @@
   (:pa . #\パ) (:pi . #\ピ) (:pu . #\プ) (:pe . #\ペ) (:po . #\ポ)
   (:ma . #\マ) (:mi . #\ミ) (:mu . #\ム) (:me . #\メ) (:mo . #\モ)
   (:ra . #\ラ) (:ri . #\リ) (:ru . #\ル) (:re . #\レ) (:ro . #\ロ)
-  (:wa . #\ワ) (:wo . #\ヲ) (:n  . #\ン) (:yu . #\ユ))
+  (:wa . #\ワ) (:wo . #\ヲ) (:n  . #\ン)
+  (:yu . #\ユ) (:ya . #\ヤ))
 
 (defcharacters :japanese-symbol
   "、。？！〜ー「」")
@@ -194,8 +196,9 @@
 ;;      -> `:ruassian'
 ;; + `+': see `lisp/base.lisp' (credit: bilibili user: 今天潜行用箱子了吗)
 ;;      -> `:symbol-2'
+;; + `ェ': see `lisp/base.lisp' (credit: bilibili user: 糯麻_Nomani)
 
-;; (defcharacters :patch
-;;   "Я+")
+(defcharacters :patch
+  "ェヨ")
 
 ;;; character-sets.lisp ends here
