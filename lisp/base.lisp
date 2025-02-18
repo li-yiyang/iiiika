@@ -271,6 +271,13 @@
   ("托" (:提手旁 "モ"))
   ("毛" "モ"))
 
+(defrule*
+  ;; Credits:
+  ;; bilibili user: 酢饴
+  ;; original comment:
+  ;; 之前取的“乡下人”（ξ T・ ノ、）不知道能不能看出来x
+  ("乡" "ξ"))
+
 ;;;; Missing Request
 
 (defrule*

@@ -281,6 +281,7 @@ l5.fvalue(internals.pv,'哪',l4.fvalue(internals.pv,l48.value,'月',l53.value));
 l5.fvalue(internals.pv,'吒',l4.fvalue(internals.pv,l48.value,'モ'));
 l5.fvalue(internals.pv,'托',l4.fvalue(internals.pv,l61.value,'モ'));
 l5.fvalue(internals.pv,'毛',l4.fvalue(internals.pv,'モ'));
+l5.fvalue(internals.pv,'乡',l4.fvalue(internals.pv,'ξ'));
 l5.fvalue(internals.pv,'亢',l4.fvalue(internals.pv,'え'));
 l5.fvalue(internals.pv,'杭',l4.fvalue(internals.pv,l73.value,'亢'));
 l5.fvalue(internals.pv,'州',l4.fvalue(internals.pv,'ł','ł','ł'));
