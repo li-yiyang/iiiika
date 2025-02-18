@@ -177,6 +177,13 @@
   ;; Credit:
   ;; bilibili user: 无明常夜
   ;; original comment is a collection screen shorts
+  ;; 哇好方便！发点遇到的国人id
+  ;; ミゆΠ キヒ ノ、<- 湖北人
+  ;; ,す, オヒ ノ、 <- 京北人?
+  ;; オヒ ,す, ノ、 <- 北京人
+  ;; ミキF ミエ ノ、<- 浙江人
+  ;; 4 lll ノ、     <- 四川人
+  ;; ミす Nαη ノ、  <- 河南人
   ;;
   ;; Note:
   ;; read from image, probably not exactly like the
@@ -184,7 +191,14 @@
   ("月" #\Π)
   ("湖" (:三点水 "中" "月"))
   ("北" "オヒ")
-  (("京") ",す,")
+
+  ;; Credit:
+  ;; github user: SlenderData
+  ;; original comment:
+  ;; 第二条应该是 东北人 吧， ,す, 也可以解释成形近的 东。
+  ;;
+  ;; https://github.com/li-yiyang/iiiika/commit/9e200ec46a72ee3490697400e0994d87de33ea60#commitcomment-152654479
+  (("京" "东") ",す,")
   ("浙" (:三点水 :提手旁 "F"))
   ("江" (:三点水 "工"))
   ("川" "lll")

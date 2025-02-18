@@ -241,6 +241,7 @@ l5.fvalue(internals.pv,'月',l4.fvalue(internals.pv,'Π'));
 l5.fvalue(internals.pv,'湖',l4.fvalue(internals.pv,l59.value,'中','月'));
 l5.fvalue(internals.pv,'北',l4.fvalue(internals.pv,'オ','ヒ'));
 l5.fvalue(internals.pv,'京',l4.fvalue(internals.pv,',','す',','));
+l5.fvalue(internals.pv,'东',l4.fvalue(internals.pv,',','す',','));
 l5.fvalue(internals.pv,'浙',l4.fvalue(internals.pv,l59.value,l65.value,'F'));
 l5.fvalue(internals.pv,'江',l4.fvalue(internals.pv,l59.value,'工'));
 l5.fvalue(internals.pv,'川',l4.fvalue(internals.pv,'l','l','l'));
