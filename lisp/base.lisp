@@ -79,7 +79,14 @@
   ("寸" (:hiragana :su)) ;; す
   (("子" "乃") (:hiragana :ro)) ;; ろ
 
-  ("丁" (:katakana :a))  ;; ア
+  ;; ("丁" (:katakana :a))  ;; ア
+  ;; 丁: ア -> T
+  ;; Credits:
+  ;; rednote user: 小红薯 63A7B0C2
+  ;; original comment:
+  ;; “打”字可以换成“キT”更像哦
+  ("丁" "T")
+  
   ("工" (:katakana :e))  ;; エ
   ("才" (:katakana :o))  ;; オ
   (("力" "刀") (:katakana :ka)) ;; カ
@@ -245,10 +252,21 @@
   ("机" (:木字旁 "几"))
   ("死" "ちE")
   ("在" "オェ")
-  
+
   ;; ("河" (:三点水 "可"))
   ("边" "でカ")
   ((:禾字旁 "禾") "ポ")
   ("种" (:禾字旁 "中")))
+
+;;;; Missing Request
+
+(defrule*
+  ;; Credits:
+  ;; rednote user: 青羽
+  ;; original comment:
+  ;; 蹲个杭州人xwx刚刚试了一下好像没有
+  ("亢" "え")
+  ("杭" (:木字旁 "亢"))
+  ("州" "łłł"))
 
 ;;; base.lisp ends here
