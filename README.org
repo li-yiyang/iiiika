@@ -129,6 +129,12 @@ Note: English may not exactly translated to Chinese in this part.
   great Splatoon Wiki
 
   好东西
++ 鱿章语 (WeChat Miniprogram 微信小程序)
+
+  likely functionality
+
+  微信有个小程序叫鱿章语和 IIIIka 的功能类似
+  # Note by redbook user: momo
 + all the players
 
   thank you all for your ikasu name
