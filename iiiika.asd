@@ -43,7 +43,6 @@
    (:file "characters")
    (:file "character-sets")
    (:file "core")
-   (:file "base-part")
-   (:file "base-word")))
+   (:file "base")))
 
 ;;; iiiika.asd ends here
