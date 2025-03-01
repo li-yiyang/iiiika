@@ -7,7 +7,7 @@
 ;; Copyright (c) 2025, 凉凉, all rights reserved
 ;; Created: 2025-02-14 19:27
 ;; Version: 0.0.0
-;; Last-Updated: 2025-02-14 19:27
+;; Last-Updated: 2025-03-01 19:24
 ;;           By: 凉凉
 ;; URL:
 ;; Keywords:
@@ -57,5 +57,37 @@
 
 (defun array->list (array)
   (map 'list #'identity array))
+
+(defmacro map-char ((char string) &body body)
+  "Iter all `char' in `string'. "
+  `(map NIL (lambda (,char) ,@body) ,string))
+
+(defmacro map-white-char-only-once ((char string) whitespace-do &body normal-do)
+  "Iter all `char' in `string' and only do once for whitespace. "
+  (let ((flag (gensym "WHITESPACE")))
+    `(let ((,flag NIL))
+       (map NIL (lambda (,char)
+                  (cond ((or (char= ,char #\Newline)
+                             (char= ,char #\Space))
+                         (unless ,flag
+                           (setf ,flag T)
+                           ,whitespace-do))
+                        (T
+                         (setf ,flag NIL)
+                         ,@normal-do)))
+            ,string))))
+
+;; For developing usage:
+#-jscl
+(trivial-indent:define-indentation map-white-char-only-once (4 &body))
+
+(defmacro do-children ((children parent) &body body)
+  `(map NIL (lambda (,children) ,@body) (attr ,parent :children)))
+
+(defmacro do-charset ((char val char-set) &body body)
+  `(maphash (lambda (,char ,val)
+              (let ((,char (code-char ,char)))
+                ,@body))
+            ,char-set))
 
 ;;; utils.lisp ends here

@@ -122,7 +122,10 @@ if is `keyword', turn it into js-like string first.
 (defun get-elem-by-id (id)
   "Get element by `id'.
 Return HTML element or `NIL' if could not get. "
-  (#j:document:getElementById id))
+  (let ((elem (#j:document:getElementById id)))
+    (unless elem
+      (error (format NIL "Cannot found elem with id `~A'. " id)))
+    elem))
 
 (defun text (elem)
   "Get/Set `elem' text by setting innerText. "
@@ -170,6 +173,9 @@ Syntax:
 (defun remove-css-class (elem class)
   (call elem :class-list (:remove class)))
 
+(defun has-css-class-p (elem class)
+  (call elem :class-list (:contains class)))
+
 (defun attach-tooltip (elem tooltip)
   (let ((tooltip (create-elem "span" tooltip)))
     (call tooltip :class-list (:add "tooltiptext"))
@@ -185,41 +191,5 @@ Syntax:
 (defun show-elem (elem)
   (call elem :class-list (:remove "fade-out"))
   (call elem :class-list (:add    "fade-in")))
-
-(defun query (prompt &key
-                       (title           (getui :query))
-                       (hint            (getui :hint))
-                       (callback        #'identity)
-                       (cancel-callback (lambda ())))
-  "Query input with prompt. "
-  (setf (text (get-elem-by-id "query-title"))   title)
-  (setf (text (get-elem-by-id "query-message")) prompt)
-  (let ((input   (get-elem-by-id "query-input"))
-        (confirm (get-elem-by-id "query-confirm"))
-        (cancel  (get-elem-by-id "query-cancel")))
-    (setf (attr input :value)       "")
-    (setf (attr input :placeholder) hint)
-    (setf (text confirm) (getui :confirm))
-    (setf (text cancel)  (getui :cancel))
-    (add-event (cancel "click")
-      (funcall cancel-callback)
-      (hide-elem (get-elem-by-id "mask"))
-      (hide-elem (get-elem-by-id "query")))
-    (add-event (confirm "click")
-      (funcall callback (attr input :value))
-      (hide-elem (get-elem-by-id "mask"))
-      (hide-elem (get-elem-by-id "query")))
-  (show-elem (get-elem-by-id "mask"))
-  (show-elem (get-elem-by-id "query"))))
-
-(defun alert (content &key
-                        (title  (getui :alert-title))
-                        (button (getui :confirm)))
-  "Popup alert. "
-  (setf (text (get-elem-by-id "alert-title"))   title)
-  (setf (text (get-elem-by-id "alert-content")) content)
-  (setf (text (get-elem-by-id "alert-button"))  button)
-  (show-elem (get-elem-by-id "mask"))
-  (show-elem (get-elem-by-id "alert")))
 
 ;;; js-layer.lisp ends here

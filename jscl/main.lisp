@@ -37,8 +37,291 @@
 
 #-jscl (error "This file only work under JSCL")
 
-;; Widgets
+;;; ===================== IIIIka Layer ==========================
+;; This wraps functions from IIIIka package.
 
+;; `*user-defined-rule-list*'
+;; `update-rule' char rule
+;; `dump-user-defined-rule'
+
+(defparameter *user-defined-rule-list* ()
+  "User defined rule list.
+
+Within the list is
+
+   (char rule)
+
+")
+
+(defun update-rule (char rule)
+  "Update rule and pushnew to `*user-defined-rule-list*'.
+Return `T' if `rule' is valid, `NIL' if not.
+
+Arguments:
++ `char' from character
++ `rule' a string
+"
+  (handler-case
+      (progn
+        (iiiika::define-rule char (array->list (iiiika:ikasu rule)) T)
+        (pushnew char *user-defined-rule-list*)
+        T)
+    (iiiika::invalid-rule (err)
+      (print err))))
+
+;; `update-ikasu' from-id to-id &key fallback editable tooltip
+
+(defun update-ikasu (from-id to-id
+                     &key
+                       (fallback "???")
+                       (editable NIL)
+                       (tooltip  T))
+  "Get original `from-id' <input> value and update `to-id' contents.
+
+Arguments:
++ `from-id'  a HTML <input> obj
++ `to-id'    a HTML <div> or <span> obj
++ `fallback' a string for ikasu fallback value
++ `editable' if `T', can be clicked to defrule
++ `tooltip'  if `T', will add a tooltip for character
+"
+  (let* ((from  (get-elem-by-id from-id))
+         (to    (get-elem-by-id to-id))
+         (input (attr from :value)))
+    (setf (inner-html to) "")
+    (cond ((zerop (length input))
+           (setf (inner-html to) fallback))
+
+          (editable
+            (map-white-char-only-once (char input)
+              ;; for white space, just append SPACE
+              (append-children to (create-elem "span" " "))
+              ;; for normal char
+              (if (iiiika::find-character char)
+                  (let* ((char (format NIL "~C" char))
+                         (elem (create-elem "span" char)))
+                    (attach-tooltip  elem char)
+                    (append-children to   elem))
+                  (multiple-value-bind (res err) (iiiika:ikasu-char char)
+                    (let* ((res  (if err (format NIL "~C" char) res))
+                           (elem (create-elem "span" res)))
+                      (add-css-class elem "editable")
+                      (add-event (elem "click") (define-rule char))
+                      (when err (add-css-class elem "unknown"))
+                      (when tooltip
+                        (if err
+                            (attach-tooltip elem (getui err))
+                            (attach-tooltip elem (format NIL "~C" char))))
+                      (append-children to elem))))))
+
+          (tooltip
+           (map-white-char-only-once (char input)
+             ;; for white space, just append SPACE
+             (let ((space (create-elem "span" " ")))
+               (attach-tooltip  space (getui '(:normal :keyboard :space)))
+               (append-children to space))
+             ;; for normal char
+             (multiple-value-bind (res err) (iiiika:ikasu-char char)
+               (if err
+                   ;; push unknown character as `ロ'
+                   (let ((elem (create-elem "span" res)))
+                     (attach-tooltip elem (getui err))
+                     (append-children to elem))
+                   ;; push mapped characters
+                   (map-char (char res)
+                     (let ((elem (create-elem "span" (format NIL "~C" char))))
+                       (multiple-value-bind (found cname)
+                           (iiiika::find-character char)
+                         (attach-tooltip elem (getui (list (first cname)
+                                                           :keyboard
+                                                           char)))
+                         (append-children to elem))))))))
+          (T
+           ;; Just write plain ikasu string
+           (setf (inner-html to) (iiiika:ikasu input))))))
+
+;;; ===================== Widgets Utils =========================
+
+;; `*widgets*':
+;; `show-widget'
+;; `hide-widget'
+(defparameter *widgets* ()
+  "Stack of current widgets lists. ")
+
+(defun show-widget (widget-id)
+  "Popup widget with id, push widget-id to `*widgets*'. "
+  (dolist (old *widgets*)
+    (hide-elem (get-elem-by-id old)))
+  (push widget-id *widgets*)
+  (show-elem (get-elem-by-id "mask"))
+  (show-elem (get-elem-by-id widget-id)))
+
+(defun hide-widget (widget-id)
+  "Hide widget with id, pop `*widgets*' list.
+If `*widgets*' is empty list, hide mask. "
+  (pop *widgets*)
+  (hide-elem (get-elem-by-id widget-id))
+  (if (endp *widgets*)
+      (hide-elem (get-elem-by-id "mask"))
+      (show-widget (pop *widgets*))))
+
+;; Keyboard
+;;      +--------------------------------------------------------------+
+;;      |                                                              |
+;;      |                       [ikasu-id]                             |
+;;      |   +-[input-id]-------------------------------------------+   |
+;;      |   |                                                      |   |
+;;      |   +------------------------------------------------------+   |
+;;      +-[kbd-div-id]-------------------------------------------------+
+;;      |                                                              |
+;;      | +-[kbd-sets-id]--------------------------------------------+ |
+;;      | | +-[kbd-stat-id]--+ +----------+ +----------+             | |
+;;      | | +----------------+ +----------+ +----------+             | |
+;;      | +----------------------------------------------------------+ |
+;;      |  +-[kbd-id]------------------------------------------------+ |
+;;      |  | +-----+ +-----+ +------+ +------+ +------+ +------+     | |
+;;      |  | |     | |     | |      | |      | |      | |      |     | |
+;;      |  | +-----+ +-----+ +------+ +------+ +------+ +------+     | |
+;;      +--+---------------------------------------------------------+-+
+;;
+;; `*kbd-width*'
+;; `append-input'     input-id char &optional ikasu-id
+;; `update-keyboard'  kbd-html-table char-set input-id ikasu-id
+;; `create-keyboard'  kbd-id char-set input-id ikasu-id
+;; `select-keyboard'  kbd-sets-id kbd-stat-id kbd-id
+;; `toggle-keyboards' kbd-div-id  stat-id &optional hide
+;; `create-keyboards' kbd-sets-id kbd-container-id char-sets-tables input-id ikasu-id
+;;
+;; Note: the key of char-set (hashtable) is char-code, use `do-charset'
+
+(defparameter *kbd-width* 8
+  "Number of keyboard buttons for single line. ")
+
+(defun append-input (input-id char &optional ikasu-id)
+  "Append `input' HTML <input> value with `char'.
+Return the appended input value.
+
+Arguments:
++ `input' HTML <input> id
++ `char'  character to be appended
++ `ikasu-id' if provided, update the ikasu contents by `update-ikasu'
+"
+  (let ((input (get-elem-by-id input-id)))
+    (setf (attr input :value) (format NIL "~A~C" (attr input :value) char))
+    (when ikasu-id (update-ikasu input-id ikasu-id))))
+
+(defun update-keyboard (kbd char-set input-id ikasu-id)
+  "Clear the `kbd' <table> content and update buttons.
+Return `kbd' itself.
+
+Arguments:
++ `kbd':       a HTML <table> obj, e.g. (get-elem-by-id kbd-id)
++ `char-sets': a hashtable for keyboard buttons
++ `input-id':  a HTML <input> for keyboard char output.
+"
+  (let ((input (get-elem-by-id input-id))
+        (line  (create-elem "tr" ""))
+        (count 0))
+    (setf (inner-html kbd) "")
+    (append-children kbd line)
+    (do-charset (char value char-set)
+      (let ((button (create-elem "td" (format NIL "~C" char))))
+        (add-css-class button "popup-button")
+        (add-event (button "click")
+          (append-input input-id char ikasu-id))
+        (append-children line button)
+        (incf count)
+        (when (= count *kbd-width*)
+          (setf line  (create-elem "tr" ""))
+          (setf count 0)
+          (append-children kbd line))))
+    kbd))
+
+(defun create-keyboard (kbd-id char-set input-id ikasu-id)
+  "Create a keyboard with id `kbd-id'.
+Return a <table> as keyboard.
+
+Arguments:
++ `kbd-id':   a string for the HTML obj id
++ `char-set': a hashtable for keyboard buttons
++ `input-id': a string for the HTML obj id to input
+"
+  (let ((kbd (create-elem "table" "")))
+    (setf (attr kbd :id) kbd-id)
+    (add-css-class kbd "popup-keyboard")
+    (update-keyboard kbd char-set input-id ikasu-id)))
+
+(defun select-keyboard (kbd-sets-id kbd-stat-id kbd-container-id kbd-id)
+  "Select `kbd-id' keyboard.
+Disable all stat button in `kbd-sets-id' but `kbd-stat-id'. "
+  (do-children (kbd-stat (get-elem-by-id kbd-sets-id))
+    (remove-css-class kbd-stat "button-popuped"))
+  (add-css-class (get-elem-by-id kbd-stat-id) "button-popuped")
+  (do-children (kbd (get-elem-by-id kbd-container-id))
+    (setf (attr kbd :style :display) "none"))
+  (setf (attr (get-elem-by-id kbd-id) :style :display) "table"))
+
+(defun toggle-keyboards (kbd-div-id stat-id &optional (hide NIL hide-p))
+  "If `stat-id' has CSS style `button-popuped', hide `kbd-div-id';
+or show `kbd-div-id' if not.
+Return `T' for showing, `NIL' for hidding.
+
+Arguments:
++ `hide' to force show/hide keyboards. "
+  (let ((kbd  (get-elem-by-id kbd-div-id))
+        (stat (get-elem-by-id stat-id)))
+    (flet ((show ()
+             (setf (attr kbd :style :display) "block")
+             (add-css-class stat "button-popuped"))
+           (hide ()
+             (setf (attr kbd :style :display) "none")
+             (remove-css-class stat "button-popuped")))
+      (if hide-p
+          (if hide (hide) (show))
+          (if (has-css-class-p stat "button-popuped") (hide) (show))))))
+
+(defun create-keyboards (kbd-sets-id kbd-container-id input-id ikasu-id
+                         &optional clear)
+  "Filling the `kbd-sets-id' by `iiiika::*characters*'. "
+  (let ((kbd-sets      (get-elem-by-id kbd-sets-id))
+        (kbd-container (get-elem-by-id kbd-container-id)))
+    (when clear
+      (setf (inner-html kbd-sets)      "")
+      (setf (inner-html kbd-container) ""))
+    (maphash
+     (lambda (stat-name char-set)
+       (let* ((char-set (getf char-set :bwd))
+              (stat-id  (format NIL "~A~A" kbd-sets-id      (symbol-name stat-name)))
+              (kbd-id   (format NIL "~A~A" kbd-container-id (symbol-name stat-name)))
+              (stat     (create-elem "button" (getui stat-name)))
+              (kbd      (create-keyboard kbd-id char-set input-id ikasu-id)))
+         (setf (attr stat :id) stat-id)
+         (add-css-class stat "popup-button")
+         (add-event (stat "click")
+           (select-keyboard kbd-sets-id stat-id kbd-container-id kbd-id))
+         (append-children kbd-sets      stat)
+         (append-children kbd-container kbd)))
+     iiiika::*character-sets*)
+    (select-keyboard kbd-sets-id
+                     (format NIL "~AHIRAGANA" kbd-sets-id)
+                     kbd-container-id
+                     (format NIL "~AHIRAGANA" kbd-container-id))))
+
+;;; ========================== Widgets =========================
+
+;; Alert
+
+(defun alert (content &key
+                        (title  (getui :alert-title))
+                        (button (getui :confirm)))
+  "Popup alert. "
+  (setf (text (get-elem-by-id "alert-title"))   title)
+  (setf (text (get-elem-by-id "alert-content")) content)
+  (setf (text (get-elem-by-id "alert-button"))  button)
+  (show-widget "alert"))
+
+;; TODO: if have time, rewrite `byname-select' to prerender the
+;; byname-adj and byname-noun list to boost up
 (defun byname-select (type)
   "Popup byname-select. "
   (setf (text (get-elem-by-id "byname-select-title"))
@@ -61,134 +344,9 @@
                  (call list (:append-child tag))))
          (aref (gethash *language* *byname*)
                (if (eq type :adj) 0 1))))
-  (show-elem (get-elem-by-id "mask"))
-  (show-elem (get-elem-by-id "byname-select")))
+  (show-widget "byname-select"))
 
-(defmacro map-white-char-only-once ((char string) whitespace-do &body normal-do)
-  "Iter all `char' in `string' and only do once for whitespace. "
-  (let ((flag (gensym "WHITESPACE")))
-    `(let ((,flag NIL))
-       (map NIL (lambda (,char)
-                  (cond ((or (char= ,char #\Newline)
-                             (char= ,char #\Space))
-                         (unless ,flag
-                           (setf ,flag T)
-                           ,whitespace-do))
-                        (T
-                         (setf ,flag NIL)
-                         ,@normal-do)))
-            ,string))))
-
-(defun update-query-name-message ()
-  "Refresh query name message. "
-  (let* ((input   (get-elem-by-id "query-name-input"))
-         (message (get-elem-by-id "query-name-message"))
-         (string  (attr input :value)))
-    (setf (inner-html message) "")
-    (if (= (length string) 0)
-        (setf (text message) "...")
-        (map-white-char-only-once (char string)
-                                  (append-children message (create-elem "span" " "))
-          (multiple-value-bind (res reason)
-              (iiiika:ikasu-char char)
-            (let* ((char (if reason (format NIL "~C" char) res))
-                   (elem (create-elem "span" char)))
-              (when reason
-                (add-css-class  elem "unknown")
-                (attach-tooltip elem (getui reason)))
-              (append-children message elem)))))))
-
-(defun update-name ()
-  (let ((name  (get-elem-by-id "name"))
-        (input (attr (get-elem-by-id "query-name-input") :value)))
-    (setf (inner-html name) "")
-    (cond ((zerop (length input))
-           (setf (inner-html name) "CLICK ME"))
-          (T
-           (map-white-char-only-once
-               (char input)
-               (let ((space (create-elem "span" " ")))
-                 (attach-tooltip space (getui '(:normal :keyboard :space)))
-                 (append-children name space))
-             (multiple-value-bind (res reason)
-                 (iiiika:ikasu-char char)
-               (if reason
-                   ;; push known character as `口'.
-                   (let ((elem (create-elem "span" res)))
-                     (attach-tooltip elem (getui reason))
-                     (append-children name elem))
-                   ;; push mapped characters to name
-                   (map-white-char-only-once (char res) NIL
-                     (let ((elem (create-elem "span" (format NIL "~C" char))))
-                       (multiple-value-bind (found char-name)
-                           (iiiika::find-character char)
-                         (declare (ignore char))
-                         (attach-tooltip elem (getui (list (first char-name) :keyboard char)))
-                         (append-children name elem)))))))))))
-
-(defun toggle-keyboard (id stat-id &optional hide)
-  (let ((kbd  (get-elem-by-id id))
-        (stat (get-elem-by-id stat-id)))
-    (cond (hide
-           (setf (attr kbd :style :display) "none")
-           (remove-css-class stat "button-popuped"))
-          ((string= (attr kbd :style :display) "block")
-           (setf (attr kbd :style :display) "none")
-           (remove-css-class stat "button-popuped"))
-          (T
-           (setf (attr kbd :style :display) "block")
-           (add-css-class stat "button-popuped")))))
-
-(defun query-name-select-keyboard (id)
-  "In query name, select keyboard with `id'.
-`id' should be the keyword in `iiiika::*character-sets*'. "
-  (map NIL (lambda (kbd)
-             (setf (attr kbd :style :display) "none"))
-       (#j:document:getElementsByClassName "popup-keyboard-content"))
-  (map NIL (lambda (kbd) (remove-css-class kbd "button-popuped"))
-       (attr (#j:document:getElementById "query-name-sets") :children))
-  (when id
-    (setf (attr (get-elem-by-id id) :style :display) "table")
-    (add-css-class (get-elem-by-id (format NIL "~A-button" id)) "button-popuped")))
-
-(defun prerender-keyboard (elem input &optional (line-break 8))
-  "pre-render keyboard on `elem'. "
-  (let ((button-line (get-elem-by-id "query-name-sets")))
-    (maphash (lambda (key char-table)
-               (let ((count  0)
-                     (choose (create-elem "button" (getui key)))
-                     (key    (format NIL "query-name-~A" (symbol-name key)))
-                     (table  (create-elem "table" ""))
-                     (line   (create-elem "tr"    "")))
-                 (add-css-class choose "popup-button")
-                 (add-css-class table  "popup-keyboard-content")
-                 (setf (attr table  :id) key)
-                 (setf (attr choose :id) (format NIL "~A-button" key))
-                 (add-event (choose "click")
-                   (query-name-select-keyboard key))
-                 (append-children button-line choose)
-                 (maphash (lambda (char name)
-                            (declare (ignore name))
-                            (let* ((char   (code-char char))
-                                   (button (create-elem "td" (format NIL "~C" char))))
-                              (add-css-class button "popup-button")
-                              (add-event (button "click")
-                                (setf (attr (get-elem-by-id input) :value)
-                                      (format NIL "~A~C"
-                                              (attr (get-elem-by-id input) :value) char))
-                                (update-query-name-message))
-                              (append-children line button)
-                              (incf count)
-                              (when (= count line-break)
-                                (append-children table line)
-                                (setf line  (create-elem "tr" "")
-                                      count 0))))
-                          (getf char-table :bwd))
-                 (unless (zerop count)
-                   (append-children table line))
-                 (append-children (get-elem-by-id elem) table)))
-             iiiika::*character-sets*)
-    (query-name-select-keyboard (format NIL "query-name-~A" (symbol-name :hiragana)))))
+;; Query Name:
 
 (defun query-name ()
   "Like `query' but popup `query-name' widget.
@@ -207,42 +365,92 @@ while input, if fails, will goes like color red. "
     (setf (text confirm) (getui :confirm))
     (setf (text keybd)   (getui :keyboard))
     (setf (text cancel)  (getui :cancel)))
-  (toggle-keyboard "query-name-keyboard" "query-name-kbd" T)
-  (show-elem (get-elem-by-id "mask"))
-  (show-elem (get-elem-by-id "query-name")))
+  (toggle-keyboards "query-name-keyboard" "query-name-kbd" T)
+  (show-widget "query-name"))
 
-;; Main
+;; Define Rule:
+
+(defparameter *define-rule-stack* ()
+  "Store currently editing char. ")
+
+(defun define-rule (char &optional rule)
+  "Popup define-rule widget for `char'. "
+  (let ((input   (get-elem-by-id "defrule-input"))
+        (from    (get-elem-by-id "defrule-from"))
+        (to      (get-elem-by-id "defrule-to"))
+        (kbd     (get-elem-by-id "defrule-kbd"))
+        (confirm (get-elem-by-id "defrule-confirm"))
+        (cancel  (get-elem-by-id "defrule-cancel")))
+    (multiple-value-bind (res err) (iiiika:ikasu-char char)
+      ;; save calling stack
+      (unless (endp *define-rule-stack*)
+        ;; if current `*define-rule-stack*' is not empty,
+        ;; push current rule into `*define-rule-stack*'.
+        (let ((prev (first (pop *define-rule-stack*))))
+          (push (list prev (attr input :value)) *define-rule-stack*)))
+      (push (list char (if err (or rule "") res)) *define-rule-stack*)
+
+      ;; init calling frame
+      (setf (text from)               (format NIL "~C" char))
+      (cond (err
+             (setf (inner-html to)     "ロ")
+             (setf (attr input :value) (or rule "")))
+            (T
+             (setf (inner-html to)     res)
+             (setf (attr input :value) (or rule res)))))
+
+    ;; update-ikasu
+    (update-ikasu "defrule-input" "defrule-to"
+                  :fallback "ロ"
+                  :editable T
+                  :tooltip  T)
+
+    ;; normal cleanup
+    (setf (attr input :placeholder) (getui (list :input char :rule)))
+    (setf (text confirm)            (getui :confirm))
+    (setf (text kbd)                (getui :keyboard))
+    (setf (text cancel)             (getui :cancel)))
+  ;; by default show keyboard
+  (toggle-keyboards "defrule-keyboard" "defrule-kbd" T)
+  (show-widget "defrule"))
+
+(defun close-define-rule (&optional (abort NIL))
+  "Try to close define-rule widget.
+If `*define-rule-stack*' is empty, close;
+or if not empty, show new. "
+  (if abort
+      (setf *define-rule-stack* ())
+      (pop *define-rule-stack*))
+  (hide-widget "defrule")
+  (unless (endp *define-rule-stack*)
+    (apply #'define-rule (pop *define-rule-stack*)))
+  (when (endp *define-rule-stack*)
+    (hide-widget "defrule")))
+
+;; Utils
+
+(defun show-utils ()
+  "Popup utils widgets. "
+  (setf (text (get-elem-by-id "utils-about")) (getui :about-msg))
+  (setf (text (get-elem-by-id "utils-dump"))  (getui '(:dump :rule)))
+  (setf (text (get-elem-by-id "utils-load"))  (getui '(:load :rule)))
+  (setf (text (get-elem-by-id "utils-repo"))  (getui '("Github" :repo)))
+  (setf (text (get-elem-by-id "utils-close")) (getui :cancel))
+  (show-widget "utils"))
+
+;;; ========================== Main ==========================
 
 (defun main ()
   "Binds all the events to front-end UI. "
+  ;;; ==================== Banner Widget ====================
+  ;; Name:
+  ;; click name -> popup query-name widget
+  (add-event ((get-elem-by-id "name") "click") (query-name))
 
-  ;;; Query Name
-  ;; Toggle Keyboard
-  (add-event ((get-elem-by-id "query-name-kbd") "click")
-    (toggle-keyboard "query-name-keyboard" "query-name-kbd"))
-
-  ;; Close query-name widget
-  (add-event ((get-elem-by-id "query-name-cancel") "click")
-    (toggle-keyboard "query-name-keyboard" "query-name-kbd" T)
-    (hide-elem (get-elem-by-id "mask"))
-    (hide-elem (get-elem-by-id "query-name")))
-
-  ;; Click query-name confirm
-  (add-event ((get-elem-by-id "query-name-confirm") "click")
-    (update-name)
-    (toggle-keyboard "query-name-keyboard" "query-name-kbd" T)
-    (hide-elem (get-elem-by-id  "mask"))
-    (hide-elem (get-elem-by-id "query-name")))
-
-  ;; Preview and check `query-name-message'
-  (add-event ((get-elem-by-id "query-name-input") "input")
-    (update-query-name-message))
-
-  ;;; Name
-  (add-event ((get-elem-by-id "name") "click")
-    (query-name))
-
-  ;;; Byname
+  ;; Byname:
+  ;; click byname        -> change randomly
+  ;; double click byname -> select byname adj/noun
+  ;; when init, sets byname randomly
   (flet ((update-adj  (&optional event)
            (if (and event (= (attr event :detail) 2))
                (byname-select :adj)
@@ -256,29 +464,103 @@ while input, if fails, will goes like color red. "
     (update-adj)
     (update-noun))
 
-  ;;; Badge
-  (flet ((sorry (event)
-           (alert (getui '(:sorry :badge :*-is-working)))))
+  ;; Badge:
+  ;; TODO: not done yet
+  (flet ((sorry (event) (alert (getui '(:sorry :badge :*-is-working)))))
     (add-event-listener (get-elem-by-id "badge-1") "click" #'sorry)
     (add-event-listener (get-elem-by-id "badge-2") "click" #'sorry)
     (add-event-listener (get-elem-by-id "badge-3") "click" #'sorry))
 
-  ;;; Alert Popup
-  (add-event ((get-elem-by-id "alert-button") "click")
-    (hide-elem (get-elem-by-id "alert"))
-    (hide-elem (get-elem-by-id "mask")))
+  ;; Banner Background:
+  ;; TODO: change randomly or selectable...
 
-  ;;; Byname Select Cancel
+  ;;; ==================== ByName Select Widget ====================
+  ;; Byname Select Cancel Button:
+  ;; click to close Byname widget
   (add-event ((get-elem-by-id "byname-select-cancel") "click")
-    (hide-elem (get-elem-by-id "byname-select"))
-    (hide-elem (get-elem-by-id "mask")))
+    (hide-widget "byname-select"))
+
+  (add-event ((get-elem-by-id "byname-select-add") "click")
+    (alert (getui '(:sorry :load :byname :*-is-working))))
+
+  ;;; ==================== Query Name Widget ====================
+  ;; Toggle Keyboard Button:
+  ;; click -> toggle keyboard display
+  (add-event ((get-elem-by-id "query-name-kbd") "click")
+    (toggle-keyboards "query-name-keyboard" "query-name-kbd"))
+
+  ;; Close query-name widget
+  (add-event ((get-elem-by-id "query-name-cancel") "click")
+    (toggle-keyboards "query-name-keyboard" "query-name-kbd" T)
+    (hide-widget "query-name"))
+
+  ;; Click query-name confirm
+  (add-event ((get-elem-by-id "query-name-confirm") "click")
+    (update-ikasu "query-name-input" "name"
+                  :fallback "CLICK ME"
+                  :editable NIL
+                  :tooltip  T)
+    (toggle-keyboards "query-name-keyboard" "query-name-kbd" T)
+    (hide-widget "query-name"))
+
+  ;; Preview and check `query-name-message'
+  (add-event ((get-elem-by-id "query-name-input") "input")
+    (update-ikasu "query-name-input" "query-name-message"
+                  :fallback "..."
+                  :editable T
+                  :tooltip  T))
+
+  ;;; ================== Define Rule Widget ===================
+  ;; Toggle Keyboard Button
+  ;; click -> toggle keyboard display
+  (add-event ((get-elem-by-id "defrule-kbd") "click")
+    (toggle-keyboards "defrule-keyboard" "defrule-kbd"))
+
+  ;; Cancel Defrule
+  (add-event ((get-elem-by-id "defrule-cancel") "click")
+    (close-define-rule))
+
+  ;; Confirm Defrule
+  (add-event ((get-elem-by-id "defrule-confirm") "click")
+    (update-rule (aref (text (get-elem-by-id "defrule-from")) 0)
+                 (text (get-elem-by-id "defrule-to")))
+    (update-ikasu "query-name-input" "query-name-message"
+                  :fallback "..."
+                  :editable T
+                  :tooltip  T)
+    (close-define-rule))
+
+  (add-event ((get-elem-by-id "defrule-input") "input")
+    (update-ikasu "defrule-input" "defrule-to"
+                  :fallback "ロ"
+                  :editable T
+                  :tooltip  T))
+
+  ;;; ====================== Alert Popup ======================
+  ;; Popup Alert Window
+  ;; alert-button: click -> close alert window
+  (add-event ((get-elem-by-id "alert-button") "click")
+    (hide-widget "alert"))
+
+  ;;; ====================== Utils ======================
+  ;; Popup Utils Window
+  ;; iiiika: click -> open
+  (add-event ((get-elem-by-id "iiiika") "click")
+    (show-utils))
+
+  ;; utils-close: click -> close utils
+  (add-event ((get-elem-by-id "utils-close") "click")
+    (hide-widget "utils"))
 
   ;;; IIIIka (now only for dbg new feature usage)
   (add-event ((get-elem-by-id "iiiika") "click")
     )
 
   ;;; Query name keyboard
-  (prerender-keyboard "query-name-keyboard" "query-name-input")
+  (create-keyboards "query-name-sets"  "query-name-kbd-container"
+                    "query-name-input" "query-name-message")
+  (create-keyboards "defrule-sets"     "defrule-kbd-container"
+                    "defrule-input"    "defrule-to")
   )
 
 (main)

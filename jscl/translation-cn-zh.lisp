@@ -33,6 +33,7 @@
 (in-package :iiiika/web)
 
 (deftranslation :cn-zh
+  (:repo         "仓库")
   (:language     "语言")
   (:sorry        "抱歉")
   (:*-is-working "仍在开发中")
@@ -52,6 +53,9 @@
   (:choose       "选择")
   (:alert-title  "消息")
   (:about        "关于")
+  (:dump         "导出")
+  (:load         "载入")
+  (:rule         "规则")
   (:unknown-rule "未知规则")
   (:normal       "普通")
   (:space        "空格")

@@ -42,7 +42,7 @@
         </span>
         <br>
         <span>
-          <a id="iiiika" href="https://github.com/li-yiyang/iiiika">IIIIka</a>,
+          <a id="iiiika">IIIIka</a>,
           Copyright (c) 2025,
           <a href="https://github.com/li-yiyang">凉凉</a>
         </span>
@@ -73,7 +73,35 @@
       </div>
       <div id="query-name-keyboard" class="popup-keyboard">
         <div id="query-name-sets" class="popup-buttons"></div>
+        <div id="query-name-kbd-container"></div>
       </div>
+    </div>
+
+    <div id="defrule" class="popup fade-out">
+      <div id="defrule-title" class="popup-title">
+        <span id="defrule-from"></span>
+        =
+        <span id="defrule-to"></span>
+      </div>
+      <input id="defrule-input" class="popup-input" type="text">
+      <div class="nowrap">
+        <button id="defrule-cancel"  class="popup-button">CANCEL</button>
+        <button id="defrule-kbd"     class="popup-button">KEYBOARD</button>
+        <button id="defrule-confirm" class="popup-button">YES</button>
+      </div>
+      <div id="defrule-keyboard">
+        <div id="defrule-sets" class="popup-buttons"></div>
+        <div id="defrule-kbd-container"></div>
+      </div>
+    </div>
+
+    <div id="utils" class="popup fade-out">
+      <div id="utils-title" class="popup-title">IIIIka</div>
+      <div id="utils-about" class="popup-content"></div>
+      <button id="utils-dump"  class="popup-button popup-button-wide">DUMP</button>
+      <button id="utils-load"  class="popup-button popup-button-wide">LOAD</button>
+      <button id="utils-repo"  class="popup-button popup-button-wide">REPO</button>
+      <button id="utils-close" class="popup-button popup-button-wide">REPO</button>
     </div>
 
     <div id="query" class="popup fade-out">
