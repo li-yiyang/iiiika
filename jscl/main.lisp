@@ -552,9 +552,10 @@ or if not empty, show new. "
   (add-event ((get-elem-by-id "utils-close") "click")
     (hide-widget "utils"))
 
-  ;;; IIIIka (now only for dbg new feature usage)
-  (add-event ((get-elem-by-id "iiiika") "click")
-    )
+  (flet ((sorry (event) (alert (getui '(:sorry :badge :*-is-working)))))
+    (add-event-listener (get-elem-by-id "utils-title") "click" #'sorry)
+    (add-event-listener (get-elem-by-id "utils-load") "click" #'sorry)
+    (add-event-listener (get-elem-by-id "utils-repo") "click" #'sorry))
 
   ;;; Query name keyboard
   (create-keyboards "query-name-sets"  "query-name-kbd-container"
