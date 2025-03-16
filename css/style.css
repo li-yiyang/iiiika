@@ -40,12 +40,21 @@ html, body {
 
     /* shadow */
     box-shadow: rgba(0, 0, 0, 0.2) 5px 5px 2.5px;
+    transition: 0.2s;
+}
+
+#banner:active {
+    transform: translateY(5px);
+    transition: 0.1s;
 }
 
 #banner-background {
     top: 0;
     left: 0;
     width: 100%;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 #name {

@@ -438,6 +438,23 @@ or if not empty, show new. "
   (setf (text (get-elem-by-id "utils-close")) (getui :cancel))
   (show-widget "utils"))
 
+;; Banner Background
+
+(defun random-pick (list)
+  (labels ((iter (lst len)
+             (if (< #-jscl (random 1.0)
+                    #+jscl (#j:Math:random)
+                    (/ 1.0 len)) ;; P(1/len)
+                 (first lst)
+                 (iter (rest lst) (1- len)))))
+    (if (endp list) nil
+        (iter list (length list)))))
+
+(defun update-banner-background (&optional banner)
+  "Get random banner background. "
+  (setf (attr (get-elem-by-id "banner-background") :src)
+        (format nil "img/banner/~A" (or banner (random-pick *banner*)))))
+
 ;;; ========================== Main ==========================
 
 (defun main ()
@@ -463,6 +480,10 @@ or if not empty, show new. "
     (add-event-listener (get-elem-by-id "byname-noun") "click" #'update-noun)
     (update-adj)
     (update-noun))
+
+  ;; Background
+  (add-event ((get-elem-by-id "banner-background") "click")
+    (update-banner-background))
 
   ;; Badge:
   ;; TODO: not done yet
@@ -557,6 +578,7 @@ or if not empty, show new. "
     (add-event-listener (get-elem-by-id "utils-load") "click" #'sorry)
     (add-event-listener (get-elem-by-id "utils-repo") "click" #'sorry))
 
+  ;;; ====================== Init ======================
   ;;; Query name keyboard
   (create-keyboards "query-name-sets"  "query-name-kbd-container"
                     "query-name-input" "query-name-message")
