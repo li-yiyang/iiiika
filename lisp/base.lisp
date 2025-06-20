@@ -385,6 +385,17 @@
   (:土字旁 "t")
   ("地" (:土字旁 "せ")))
 
+(defrule*
+  ;; Credits:
+  ;; bilibili user: 一只大大大杨桃
+  ;; original comment
+  ;; βĄ ζギ ロ♂ 3，阴成啥了
+  ("阴" (:双耳旁 "月"))
+  ("成" "ζギ")
+  ("舍" "♂")
+  ("啥" (:口字旁 "舍"))
+  ("了" "3"))
+
 ;;;; Missing Request
 
 (defrule*
