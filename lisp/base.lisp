@@ -396,6 +396,18 @@
   ("啥" (:口字旁 "舍"))
   ("了" "3"))
 
+(defrule*
+  ;; Credits:
+  ;; bilibili user: 老_企鹅
+  ;; original comment
+  ;; 混的人[doge]
+  ("昆" "Æ")
+  ("氏" "Æ")
+  ("𠂢" "Æ")
+  ("混" (:三点水 "昆"))
+  ("勺" "ウ")
+  ("的" ("白" "勺")))
+
 ;;;; Missing Request
 
 (defrule*
