@@ -341,6 +341,7 @@ l5.fvalue(internals.pv,'了',l4.fvalue(internals.pv,'3'));
 l5.fvalue(internals.pv,'昆',l4.fvalue(internals.pv,'Æ'));
 l5.fvalue(internals.pv,'氏',l4.fvalue(internals.pv,'Æ'));
 l5.fvalue(internals.pv,'𠂢',l4.fvalue(internals.pv,'Æ'));
+l5.fvalue(internals.pv,'纸',l4.fvalue(internals.pv,l56.value,'氏'));
 l5.fvalue(internals.pv,'混',l4.fvalue(internals.pv,l58.value,'昆'));
 l5.fvalue(internals.pv,'勺',l4.fvalue(internals.pv,'ウ'));
 l5.fvalue(internals.pv,'的',l4.fvalue(internals.pv,'白','勺'));
