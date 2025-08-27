@@ -409,6 +409,15 @@
   ("勺" "ウ")
   ("的" ("白" "勺")))
 
+(defrule*
+  ;; Credits:
+  ;; rednote post: https://www.xiaohongshu.com/explore/68aed595000000001c03713d
+  ;; title: 误入肛肠科，，
+  ;; author: 妹妹头大好专
+  ("肛" (:月字旁 "工"))
+  ("勿" "る")
+  ("肠" (:月字旁 "る")))
+
 ;;;; Missing Request
 
 (defrule*
