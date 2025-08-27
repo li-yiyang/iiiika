@@ -30,26 +30,33 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this package. If not, see <https://www.gnu.org/licenses/>.
 
-(in-package :iiiika/web)
+;;; Documentation:
+;; To compile a server executable:
+;;
+;;     sbcl --load site-server.lisp
+;;
 
-;; (ql:quickload :hunchentoot)
+(in-package :cl-user)
+
+(ql:quickload '(:hunchentoot :func2exec))
 
 ;;; Configurable variables
 
-(defvar *iiiika-web-path*
-  (asdf:system-relative-pathname :iiiika "./")
+(defvar *iiiika-web-path* #P"../"
   "Path to IIIIka sources. ")
 
 ;;; Server
 
-(defparameter *iiiika-server*
-  (make-instance 'hunchentoot:easy-acceptor :port 4000))
+(defun serve (&optional (path *iiiika-web-path*) (port 4000))
+  "Create a IIIIKA server at PATH of PORT. "
+  (let ((server (make-instance 'hunchentoot:easy-acceptor :port port)))
+    (setf (hunchentoot:acceptor-document-root server) path)
+    (hunchentoot:start server)
+    (sleep 100)))
 
-(setf (hunchentoot:acceptor-document-root *iiiika-server*)
-      *iiiika-web-path*)
-
-(hunchentoot:start *iiiika-server*)
-
-;; (hunchentoot:stop *iiiika-server*)
+(func2exec:f2e 'serve
+               :executable "serve"
+               :parse-hint '((:path . :plain)
+                             (:port . :read)))
 
 ;;; site-server.lisp ends here
