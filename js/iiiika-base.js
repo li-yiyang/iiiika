@@ -317,7 +317,7 @@ l5.fvalue(internals.pv,'肥',l4.fvalue(internals.pv,l81.value,'巴'));
 l5.fvalue(internals.pv,'归',l4.fvalue(internals.pv,'リ','ヨ'));
 l5.fvalue(internals.pv,'甘',l4.fvalue(internals.pv,'Ħ'));
 l5.fvalue(internals.pv,'泔',l4.fvalue(internals.pv,l58.value,'甘'));
-l5.fvalue(internals.pv,'飞',l4.fvalue(internals.pv,'Ζ',';'));
+l5.fvalue(internals.pv,'飞',l4.fvalue(internals.pv,'て','<'));
 l5.fvalue(internals.pv,'杯',l4.fvalue(internals.pv,l74.value,'不'));
 l5.fvalue(internals.pv,'长',l4.fvalue(internals.pv,'-','К'));
 l5.fvalue(internals.pv,'号',l4.fvalue(internals.pv,'♀'));
