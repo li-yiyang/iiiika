@@ -1,13 +1,13 @@
-;;; iiiika.asd --- System definition for IIIIka, the Splatoon Chinese name inputer
+;;; jscl-compile-f2e.lisp --- Use F2E to build the compile executable
 
-;; File:        iiiika.asd
-;; Description: System definition for IIIIka, the Splatoon Chinese name inputer
+;; File:        jscl-compile.lisp
+;; Description: Using JSCL to compile the system
 ;; Author:      凉凉
 ;; Maintainer:  凉凉
 ;; Copyright (c) 2025, 凉凉, all rights reserved
-;; Created: 2025-02-12 18:02
+;; Created: 2025-08-27 20:52
 ;; Version: 0.0.0
-;; Last-Updated: 2025-02-12 18:02
+;; Last-Updated: 2025-08-27 20:52
 ;;           By: 凉凉
 ;; URL:
 ;; Keywords:
@@ -30,19 +30,26 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this package. If not, see <https://www.gnu.org/licenses/>.
 
-(asdf:defsystem #:iiiika
-  :author ("凉凉")
-  :version "0"
-  :description "IIIIka is a Chinese-like word input for Splatoon. "
-  :depends-on (:alexandria :str)
-  :serial t
-  :pathname "lisp"
-  :components
-  ((:file "package")
-   (:file "utils")
-   (:file "characters")
-   (:file "character-sets")
-   (:file "core")
-   (:file "base")))
+(ql:quickload :func2exec)
 
-;;; iiiika.asd ends here
+;; Change this to your JSCL path
+(load "~/quicklisp/local-projects/jscl/jscl.lisp")
+(jscl:bootstrap)
+
+(pushnew #P"../" ql:*local-project-directories*)
+(ql:quickload :iiiika)
+
+;; I messed something up, I will consider rewrite them
+;; in the future (maybe)
+;;
+(load "../jscl/package.lisp")
+(load "../jscl/config.lisp")
+(load "../jscl/utils.lisp")
+
+(in-package :iiiika/web)
+(load "./jscl-compile.lisp")
+
+(func2exec:f2e #'compile-iiiika
+               :executable "compile")
+
+;;; jscl-compile-f2e.lisp

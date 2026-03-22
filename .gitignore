@@ -1,1 +1,4 @@
 .DS_Store
+/system-index.txt
+/scripts/compile
+/scripts/serve

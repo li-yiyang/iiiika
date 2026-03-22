@@ -361,7 +361,13 @@
   ("归" "リヨ")
   ("甘" "Ħ")
   ("泔" (:三点水 "甘"))
-  ("飞" "Ζ;")
+
+  ;; Updated:
+  ;; Credits:
+  ;; bilibili user: 丿我一不小心彡
+  ;; original comment:
+  ;; キΤ てく ホΠ イШ ノ、
+  ("飞" "て<")
 
   ;; inspired
   ("杯" (:木字旁 "不"))
@@ -415,6 +421,14 @@
   ;; original comment
   ;; 開大啊！野人隊魷們，求你了...[大哭]
   ("开" "キキ"))
+
+(defrule*
+  ;; rednote post: https://www.xiaohongshu.com/explore/68aed595000000001c03713d
+  ;; title: 误入肛肠科，，
+  ;; author: 妹妹头大好专
+  ("肛" (:月字旁 "工"))
+  ("勿" "る")
+  ("肠" (:月字旁 "る")))
 
 ;;;; Missing Request
 
