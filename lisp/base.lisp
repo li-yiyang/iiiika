@@ -409,6 +409,13 @@
   ("勺" "ウ")
   ("的" ("白" "勺")))
 
+(defrule*
+  ;; Credits:
+  ;; bilibili user: RRTWGM
+  ;; original comment
+  ;; 開大啊！野人隊魷們，求你了...[大哭]
+  ("开" "キキ"))
+
 ;;;; Missing Request
 
 (defrule*
