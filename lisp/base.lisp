@@ -187,7 +187,12 @@
 
   ("门" "iコ")
   ("外" "タ卜")
-  ("汉" "シマ"))
+
+  ;; Credit:
+  ;; bilibili user: 巡音霁薇
+  ;; original comment:
+  ;; 汉用シヌ会不会好一点（？
+  ("汉" "シヌ"))
 
 (defrule*
   ;; Credit:

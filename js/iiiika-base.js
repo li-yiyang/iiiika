@@ -232,7 +232,7 @@ l5.fvalue(internals.pv,'什',l4.fvalue(internals.pv,'イ','+'));
 l5.fvalue(internals.pv,'别',l4.fvalue(internals.pv,'Я','l','l'));
 l5.fvalue(internals.pv,'门',l4.fvalue(internals.pv,'i','コ'));
 l5.fvalue(internals.pv,'外',l4.fvalue(internals.pv,'タ','卜'));
-l5.fvalue(internals.pv,'汉',l4.fvalue(internals.pv,'シ','マ'));
+l5.fvalue(internals.pv,'汉',l4.fvalue(internals.pv,'シ','ヌ'));
 l5.fvalue(internals.pv,'湖',l4.fvalue(internals.pv,l58.value,'中','月'));
 l5.fvalue(internals.pv,'北',l4.fvalue(internals.pv,'オ','ヒ'));
 l5.fvalue(internals.pv,'京',l4.fvalue(internals.pv,',','す',','));
