@@ -349,6 +349,8 @@ l5.fvalue(internals.pv,'开',l4.fvalue(internals.pv,'キ','キ'));
 l5.fvalue(internals.pv,'肛',l4.fvalue(internals.pv,l81.value,'工'));
 l5.fvalue(internals.pv,'勿',l4.fvalue(internals.pv,'る'));
 l5.fvalue(internals.pv,'肠',l4.fvalue(internals.pv,l81.value,'る'));
+l5.fvalue(internals.pv,'叶',l4.fvalue(internals.pv,'o','✝'));
+l5.fvalue(internals.pv,'问',l4.fvalue(internals.pv,'Ì','o',']'));
 l5.fvalue(internals.pv,'亢',l4.fvalue(internals.pv,'え'));
 l5.fvalue(internals.pv,'杭',l4.fvalue(internals.pv,l74.value,'亢'));
 l5.fvalue(internals.pv,'州',l4.fvalue(internals.pv,'ł','ł','ł'));

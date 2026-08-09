@@ -435,6 +435,14 @@
   ("勿" "る")
   ("肠" (:月字旁 "る")))
 
+(defrule*
+  ;; Credits:
+  ;; bilibili user: 拆月小刀
+  ;; original comment
+  ;; 叶问
+  ("叶" "o✝")
+  ("问" "Ìo]"))
+
 ;;;; Missing Request
 
 (defrule*
