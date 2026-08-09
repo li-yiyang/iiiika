@@ -33,7 +33,7 @@
 ;;; Documentation:
 ;; To compile a server executable:
 ;;
-;;     sbcl --load site-server.lisp
+;;     sbcl --non-interactive --load site-server.lisp
 ;;
 
 (in-package :cl-user)
@@ -48,7 +48,22 @@
 ;;; Server
 
 (defun serve (&optional (path *iiiika-web-path*) (port 4000))
-  "Create a IIIIKA server at PATH of PORT. "
+  "Create a IIIIKA server at PATH of PORT.
+
+Parameters:
++ PATH: root path for serving (default current path)
++ PORT: port number (default 4000)
+
+Examples:
+
++ start a server using default configuration
+
+    serve
+
++ start a server at location and port number 2333
+
+    serve $PATH_TO_IIIIKA_REPO 2333
+"
   (let ((server (make-instance 'hunchentoot:easy-acceptor :port port)))
     (setf (hunchentoot:acceptor-document-root server) path)
     (hunchentoot:start server)
